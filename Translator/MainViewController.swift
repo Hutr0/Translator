@@ -40,11 +40,13 @@ class MainViewController: NSViewController {
         
         languageFormat.string = language
     }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
+    
+    @IBAction func clearButtonTapped(_ sender: Any) {
+        program.string = ""
+        linesOfProgram.string = ""
+    }
+    
+    @IBAction func executeButtonTapped(_ sender: Any) {
     }
 }
 
