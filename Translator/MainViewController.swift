@@ -7,8 +7,13 @@
 
 import Cocoa
 
-class ViewController: NSViewController {
+class MainViewController: NSViewController {
 
+    @IBOutlet var languageFormat: NSTextView!
+    @IBOutlet var linesOfProgram: NSTextView!
+    @IBOutlet var program: NSTextView!
+    @IBOutlet var output: NSTextView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
