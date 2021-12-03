@@ -16,7 +16,7 @@ class MainView: NSViewController {
     @IBOutlet weak var rowsScrollView: NSScrollView!
     
     @IBOutlet var program: NSTextView!
-    @IBOutlet weak var programScrollView: ProgramScrollView!
+    @IBOutlet weak var programScrollView: NSScrollView!
     
     let controller = MainController()
     
@@ -24,7 +24,11 @@ class MainView: NSViewController {
         super.viewDidLoad()
         
         program.delegate = self
-        programScrollView.addObserver(observer: self)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(boundsDidChangeNotification),
+                                               name: NSView.boundsDidChangeNotification,
+                                               object: programScrollView.contentView)
         
         languageFormat.string = controller.language
         
@@ -41,7 +45,7 @@ class MainView: NSViewController {
     }
 }
 
-extension MainView: NSTextViewDelegate, StandartObserver {
+extension MainView: NSTextViewDelegate {
     
     func textDidChange(_ notification: Notification) {
         let rowsCount = self.rowsOfProgram.string.components(separatedBy: "\n").count
@@ -49,7 +53,9 @@ extension MainView: NSTextViewDelegate, StandartObserver {
         
         if rowsCount < programRowsCount {
             let last = self.rowsOfProgram.string.components(separatedBy: "\n").last
-            controller.addRows(last: last) { num in
+            controller.addRows(last: last) { [weak self] num in
+                guard let self = self else { return }
+                
                 self.rowsOfProgram.string += "\n\(num)"
             }
         } else if rowsCount > programRowsCount {
@@ -57,7 +63,7 @@ extension MainView: NSTextViewDelegate, StandartObserver {
         }
     }
     
-    func valueChanged(point: CGPoint) {
-        self.rowsScrollView.scroll(self.rowsScrollView.contentView, to: point)
+    @objc func boundsDidChangeNotification() {
+        self.rowsScrollView.scroll(self.rowsScrollView.contentView, to: self.programScrollView.documentVisibleRect.origin)
     }
 }
