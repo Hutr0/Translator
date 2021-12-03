@@ -729,7 +729,7 @@
                                                     <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5Q9-4P-Ybv">
                                                         <rect key="frame" x="0.0" y="0.0" width="641" height="344"/>
                                                         <subviews>
-                                                            <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Ng-kf-vbD">
+                                                            <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Ng-kf-vbD">
                                                                 <rect key="frame" x="0.0" y="0.0" width="50" height="344"/>
                                                                 <clipView key="contentView" drawsBackground="NO" id="wRd-zk-V77">
                                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="344"/>
@@ -753,12 +753,12 @@
                                                                     <rect key="frame" x="-100" y="-100" width="240" height="16"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
-                                                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="jS0-qY-3sj">
-                                                                    <rect key="frame" x="34" y="0.0" width="16" height="344"/>
+                                                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="jS0-qY-3sj">
+                                                                    <rect key="frame" x="-100" y="-100" width="16" height="344"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                 </scroller>
                                                             </scrollView>
-                                                            <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DnZ-L8-wRW">
+                                                            <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DnZ-L8-wRW" customClass="ProgramScrollView" customModule="Translator" customModuleProvider="target">
                                                                 <rect key="frame" x="58" y="0.0" width="583" height="344"/>
                                                                 <clipView key="contentView" drawsBackground="NO" id="SOE-Al-Rcg">
                                                                     <rect key="frame" x="0.0" y="0.0" width="583" height="344"/>
@@ -994,7 +994,9 @@
                         <outlet property="languageFormat" destination="lpb-KW-BwL" id="0Ad-wg-VXG"/>
                         <outlet property="output" destination="B7I-wt-5BY" id="guh-9d-qwl"/>
                         <outlet property="program" destination="qRM-Sl-fNY" id="zbt-e6-Ptp"/>
+                        <outlet property="programScrollView" destination="DnZ-L8-wRW" id="Grk-5n-s0f"/>
                         <outlet property="rowsOfProgram" destination="TAp-9K-6UA" id="fON-YJ-Em8"/>
+                        <outlet property="rowsScrollView" destination="4Ng-kf-vbD" id="hzM-de-P4r"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
