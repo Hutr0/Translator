@@ -43,6 +43,7 @@ class MainController {
     arg = 14^2
     p2 = param1 / 2
     p = sin p2
+    End
     """
     
     func addRows(last: String?, completion: @escaping (Int) -> ()) {
@@ -73,5 +74,14 @@ class MainController {
         if rowsCount > programRowsCount {
             deleteRows(self)
         }
+    }
+    
+    func startAnalyze(program: String) {
+        let lAnalizer = LexicalAnalyzer(inputProgram: program)
+        
+        guard let tokens = lAnalizer.tokenize() else { return }
+        
+        let parser = Parser(stringTokens: tokens)
+        parser.parse()
     }
 }

@@ -50,7 +50,7 @@ class LexicalAnalyzer {
         return tokens
     }
     
-    func getSybolType(symbol: Character) -> SymbolClasses? {
+    func getSybolType(symbol: Character) -> SymbolClass? {
         switch symbol {
         case "a"..."z", "A"..."Z":
             return .value
@@ -58,23 +58,22 @@ class LexicalAnalyzer {
             return .value
         case "=":
             return .modifier
-        case "+", "-":
-            return .modifier
-        case "*", "/":
+        case "+", "-", "*", "/":
             return .modifier
         case "^":
             return .modifier
         case ",":
-            return .separator
+            return .modifier
         case " ":
             return .separator
         case "\n":
-            return .separator
+            return .modifier
         default:
             return nil
         }
     }
-    enum SymbolClasses {
+    
+    enum SymbolClass {
         case value
         case separator
         case modifier

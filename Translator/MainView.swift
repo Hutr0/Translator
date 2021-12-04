@@ -44,11 +44,7 @@ class MainView: NSViewController {
     }
     
     @IBAction func executeButtonTapped(_ sender: Any) {
-        let lAnalizer = LexicalAnalyzer(inputProgram: program.string)
-        
-        guard let result = lAnalizer.tokenize() else { return }
-        
-        print(result)
+        controller.startAnalyze(program: program.string)
     }
 }
 

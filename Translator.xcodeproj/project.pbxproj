@@ -14,6 +14,7 @@
 		E0BC4E3D275972F200DC5345 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E3C275972F200DC5345 /* MainController.swift */; };
 		E0BC4E45275B8E4500DC5345 /* LexicalAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */; };
 		E0BC4E47275BB4F400DC5345 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E46275BB4F400DC5345 /* Token.swift */; };
+		E0BC4E49275BC7C600DC5345 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E48275BC7C600DC5345 /* Parser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		E0BC4E3C275972F200DC5345 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexicalAnalyzer.swift; sourceTree = "<group>"; };
 		E0BC4E46275BB4F400DC5345 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		E0BC4E48275BC7C600DC5345 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 				E0BC4E3C275972F200DC5345 /* MainController.swift */,
 				E00512A5275930AE005AC832 /* MainView.swift */,
 				E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */,
+				E0BC4E48275BC7C600DC5345 /* Parser.swift */,
 				E0BC4E46275BB4F400DC5345 /* Token.swift */,
 				E00512A7275930B0005AC832 /* Assets.xcassets */,
 				E00512A9275930B0005AC832 /* Main.storyboard */,
@@ -142,6 +145,7 @@
 			files = (
 				E0BC4E45275B8E4500DC5345 /* LexicalAnalyzer.swift in Sources */,
 				E0BC4E47275BB4F400DC5345 /* Token.swift in Sources */,
+				E0BC4E49275BC7C600DC5345 /* Parser.swift in Sources */,
 				E00512A6275930AE005AC832 /* MainView.swift in Sources */,
 				E0BC4E3D275972F200DC5345 /* MainController.swift in Sources */,
 				E00512A4275930AE005AC832 /* AppDelegate.swift in Sources */,
