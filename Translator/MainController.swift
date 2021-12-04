@@ -30,6 +30,21 @@ class MainController {
     букв = "a"..."z"
     """
     
+    let testProgram = """
+    Begin
+    First
+    0,2,4,3
+    First
+    56,6,1
+    Second
+    d7da uh312d d2
+    param1 = 1 + 2
+    ar13 = 12 * 2
+    arg = 14^2
+    p2 = param1 / 2
+    p = sin p2
+    """
+    
     func addRows(last: String?, completion: @escaping (Int) -> ()) {
         guard let last = last,
               let intLast = Int(last)
