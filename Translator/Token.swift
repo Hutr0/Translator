@@ -9,7 +9,7 @@ import Foundation
 
 class DeclaredVariables {
     let name: String
-    let value: Int
+    var value: Int
     
     init(name: String, value: Int) {
         self.name = name
@@ -19,7 +19,8 @@ class DeclaredVariables {
 
 class Token {
     let type: TokenType?
-    let value: String
+    var value: String
+    var minus: Bool = false
     
     init(type: TokenType?, value: String) {
         self.type = type

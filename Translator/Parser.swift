@@ -110,6 +110,14 @@ class Parser  {
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
+                } else if (lastContentToken.type == .equal || lastContentToken.type == .operation || lastContentToken.type == .function) && token.value == "-" {
+                    lastContentToken = token
+                    continue
+                } else if lastContentToken.value == "-" && (token.type == .number || token.type == .word) {
+                    token.minus = true
+                    tokensOfVar.append(token)
+                    lastContentToken = token
+                    continue
                 } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .operation {
                     tokensOfVar.append(token)
                     lastContentToken = token
@@ -153,16 +161,26 @@ class Parser  {
         for token in tokens {
             switch token.type {
             case .number:
-                guard let intValue = Int(token.value) else {
+                guard var intValue = Int(token.value) else {
                     print("Error: Conversion error.")
                     return
                 }
+                
+                if token.minus {
+                    intValue *= -1
+                }
+                
                 values.append(intValue)
             case .operation, .function:
                 operations.append(token.value)
             case .word:
                 for declaredVariable in declaredVariables {
                     if token.value == declaredVariable.name {
+                        
+                        if token.minus {
+                            declaredVariable.value *= -1
+                        }
+                        
                         values.append(declaredVariable.value)
                         declared = true
                     }
