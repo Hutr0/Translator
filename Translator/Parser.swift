@@ -18,7 +18,7 @@ class Parser  {
         var startIsSet: Bool = false
         var endIsSet: Bool = false
         var tokens: [Token] = []
-        var valuesOfVar: [String] = []
+        var tokensOfVar: [Token] = []
         var lastToken: Token = Token(type: nil, value: "")
         var lastContentToken: Token = Token(type: nil, value: "")
         
@@ -106,20 +106,20 @@ class Parser  {
             
             if lastToken.type == .word {
                 if lastContentToken.type == .equal && (token.type == .number || token.type == .word || token.type == .function) {
-                    valuesOfVar.append(token.value)
+                    tokensOfVar.append(token)
                     lastContentToken = token
                     continue
                 } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .operation {
-                    valuesOfVar.append(token.value)
+                    tokensOfVar.append(token)
                     lastContentToken = token
                     continue
                 } else if lastContentToken.type == .operation && (token.type == .number || token.type == .word) {
-                    valuesOfVar.append(token.value)
+                    tokensOfVar.append(token)
                     lastContentToken = token
                     continue
                 } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .endOfLine {
-                    getVar(name: lastToken.value, values: valuesOfVar)
-                    valuesOfVar = []
+                    getVar(name: lastToken.value, tokens: tokensOfVar)
+                    tokensOfVar = []
                     lastContentToken = token
                     continue
                 } else if lastContentToken.type == .endOfLine && token.type == .word {
@@ -130,7 +130,7 @@ class Parser  {
                     lastContentToken = token
                     continue
                 } else if lastContentToken.type == .function && (token.type == .number || token.type == .word) {
-                    valuesOfVar.append(token.value)
+                    tokensOfVar.append(token)
                     lastContentToken = token
                     continue
                 } else if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
@@ -144,8 +144,81 @@ class Parser  {
         }
     }
     
-    private func getVar(name: String, values: [String]) {
-        print("\(name) = \(values)")
+    private func getVar(name: String, tokens: [Token]) {
+        var variables: [Int] = []
+        var operations: [String: Int] = [:]
+        var result: Int = 0
+        var hasMult: Bool = false
+        
+        // 1 + 2 + 2 - 1 / 2
+        
+        for token in tokens {
+            if token.type == .number {
+                guard let intVariable = Int(token.value) else { return }
+                variables.append(intVariable)
+            } else if token.type == .operation {
+                if token.value == "+" || token.value == "-" {
+                    operations.updateValue(0, forKey: token.value)
+                } else if token.value == "*" || token.value == "/" {
+                    operations.updateValue(1, forKey: token.value)
+                    hasMult = true
+                }
+            }
+        }
+        
+        if variables.count > operations.count {
+            while !operations.isEmpty {
+                if hasMult {
+                    var i = 0
+                    for operation in operations {
+                        if operation.value == 1 {
+                            switch operation.key {
+                            case "*":
+                                let equationResult = variables[i] * variables[i+1]
+                                variables[i] = equationResult
+                                result = equationResult
+                            case "/":
+                                let equationResult = variables[i] / variables[i+1]
+                                variables[i] = equationResult
+                                result = equationResult
+                            default:
+                                print("Error in getVar */")
+                                return
+                            }
+                            
+                            operations.removeValue(forKey: operation.key)
+                            variables.remove(at: i+1)
+                            i -= 1
+                        }
+                        
+                        i += 1
+                    }
+                    
+                    hasMult = false
+                } else {
+                    for operation in operations {
+                        switch operation.key {
+                        case "+":
+                            let equationResult = variables[0] + variables[1]
+                            result = equationResult
+                            variables[0] = equationResult
+                        case "-":
+                            let equationResult = variables[0] - variables[1]
+                            result = equationResult
+                            variables[0] = equationResult
+                        default:
+                            print("Error in getVar +-")
+                            return
+                        }
+                        
+                        operations.removeValue(forKey: operation.key)
+                        variables.remove(at: 1)
+                    }
+                }
+            }
+        }
+        
+        print("\(name) = \(result)")
     }
     
     private func getTokenType(stringToken: String) -> TokenType? {
