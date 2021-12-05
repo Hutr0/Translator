@@ -18,8 +18,9 @@ class Parser  {
         var startIsSet: Bool = false
         var endIsSet: Bool = false
         var tokens: [Token] = []
-        var lastToken: Token!
-        var lastContentToken: Token!
+        var valuesOfVar: [String] = []
+        var lastToken: Token = Token(type: nil, value: "")
+        var lastContentToken: Token = Token(type: nil, value: "")
         
         for stringToken in stringTokens {
             let type = getTokenType(stringToken: stringToken)
@@ -105,15 +106,20 @@ class Parser  {
             
             if lastToken.type == .word {
                 if lastContentToken.type == .equal && (token.type == .number || token.type == .word || token.type == .function) {
+                    valuesOfVar.append(token.value)
                     lastContentToken = token
                     continue
                 } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .operation {
+                    valuesOfVar.append(token.value)
                     lastContentToken = token
                     continue
                 } else if lastContentToken.type == .operation && (token.type == .number || token.type == .word) {
+                    valuesOfVar.append(token.value)
                     lastContentToken = token
                     continue
                 } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .endOfLine {
+                    getVar(name: lastToken.value, values: valuesOfVar)
+                    valuesOfVar = []
                     lastContentToken = token
                     continue
                 } else if lastContentToken.type == .endOfLine && token.type == .word {
@@ -124,6 +130,7 @@ class Parser  {
                     lastContentToken = token
                     continue
                 } else if lastContentToken.type == .function && (token.type == .number || token.type == .word) {
+                    valuesOfVar.append(token.value)
                     lastContentToken = token
                     continue
                 } else if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
@@ -135,8 +142,10 @@ class Parser  {
                 }
             }
         }
-        
-        print(tokens)
+    }
+    
+    private func getVar(name: String, values: [String]) {
+        print("\(name) = \(values)")
     }
     
     private func getTokenType(stringToken: String) -> TokenType? {

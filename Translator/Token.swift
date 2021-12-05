@@ -30,26 +30,3 @@ enum TokenType {
     case endOfLine
     case non
 }
-
-//struct SymbolDesc {
-//    let t: SymbolTypes
-//    let c: SymbolClasses
-//}
-//
-//
-//    func getStringId(string: String) -> Int? {
-//        switch string {
-//        case "Begin":
-//            return 0
-//        case "First":
-//            return 1
-//        case "Second":
-//            return 2
-//        case "sin", "cos", "tg", "ctg":
-//            return 3
-//        case "End":
-//            return 4
-//        default:
-//            return nil
-//        }
-//    }
