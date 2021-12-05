@@ -7,6 +7,16 @@
 
 import Foundation
 
+class DeclaredVariables {
+    let name: String
+    let value: Int
+    
+    init(name: String, value: Int) {
+        self.name = name
+        self.value = value
+    }
+}
+
 class Token {
     let type: TokenType?
     let value: String
@@ -22,11 +32,10 @@ enum TokenType {
     case endOfProgram
     case zveno
     case equal
-    case operation
-    case comma
-    case function
-    case number
     case word
+    case number
+    case operation
+    case function
+    case comma
     case endOfLine
-    case non
 }

@@ -9,6 +9,7 @@ import Foundation
 
 class Parser  {
     let stringTokens: [String]
+    var declaredVariables: [DeclaredVariables] = []
     
     init(stringTokens: [String]) {
         self.stringTokens = stringTokens
@@ -145,80 +146,137 @@ class Parser  {
     }
     
     private func getVar(name: String, tokens: [Token]) {
-        var variables: [Int] = []
-        var operations: [String: Int] = [:]
-        var result: Int = 0
-        var hasMult: Bool = false
-        
-        // 1 + 2 + 2 - 1 / 2
+        var values: [Int] = []
+        var operations: [String] = []
+        var declared: Bool = false
         
         for token in tokens {
-            if token.type == .number {
-                guard let intVariable = Int(token.value) else { return }
-                variables.append(intVariable)
-            } else if token.type == .operation {
-                if token.value == "+" || token.value == "-" {
-                    operations.updateValue(0, forKey: token.value)
-                } else if token.value == "*" || token.value == "/" {
-                    operations.updateValue(1, forKey: token.value)
-                    hasMult = true
+            switch token.type {
+            case .number:
+                guard let intValue = Int(token.value) else {
+                    print("Error: Conversion error.")
+                    return
                 }
+                values.append(intValue)
+            case .operation, .function:
+                operations.append(token.value)
+            case .word:
+                for declaredVariable in declaredVariables {
+                    if token.value == declaredVariable.name {
+                        values.append(declaredVariable.value)
+                        declared = true
+                    }
+                }
+                
+                if !declared {
+                    print("name = Error: \(token.value) was not declared.")
+                    return
+                }
+            default:
+                continue
             }
         }
         
-        if variables.count > operations.count {
-            while !operations.isEmpty {
-                if hasMult {
-                    var i = 0
-                    for operation in operations {
-                        if operation.value == 1 {
-                            switch operation.key {
-                            case "*":
-                                let equationResult = variables[i] * variables[i+1]
-                                variables[i] = equationResult
-                                result = equationResult
-                            case "/":
-                                let equationResult = variables[i] / variables[i+1]
-                                variables[i] = equationResult
-                                result = equationResult
-                            default:
-                                print("Error in getVar */")
-                                return
-                            }
-                            
-                            operations.removeValue(forKey: operation.key)
-                            variables.remove(at: i+1)
-                            i -= 1
-                        }
-                        
-                        i += 1
-                    }
-                    
-                    hasMult = false
-                } else {
-                    for operation in operations {
-                        switch operation.key {
-                        case "+":
-                            let equationResult = variables[0] + variables[1]
-                            result = equationResult
-                            variables[0] = equationResult
-                        case "-":
-                            let equationResult = variables[0] - variables[1]
-                            result = equationResult
-                            variables[0] = equationResult
-                        default:
-                            print("Error in getVar +-")
-                            return
-                        }
-                        
-                        operations.removeValue(forKey: operation.key)
-                        variables.remove(at: 1)
-                    }
-                }
-            }
+        let result = calculate(values: values, operations: operations)
+        guard let result = result else {
+            print("Error: Cannot calculate the result.")
+            return
         }
-        
+
+        self.declaredVariables.append(DeclaredVariables(name: name, value: result))
         print("\(name) = \(result)")
+    }
+    
+    private func calculate(values: [Int], operations: [String]) -> Int? {
+        var values = values
+        var operations = operations
+        
+        var i = 0
+        for operation in operations {
+            if operation == "sin" || operation == "cos" || operation == "tg" || operation == "ctg" {
+                switch operation {
+                case "sin":
+                    let equationResult = Int(sin(Double(values[i])))
+                    values[i] = equationResult
+                case "cos":
+                    let equationResult = Int(cos(Double(values[i])))
+                    values[i] = equationResult
+                case "tg":
+                    let equationResult = Int(tan(Double(values[i])))
+                    values[i] = equationResult
+                case "ctg":
+                    let equationResult = Int(1 / tan(Double(values[i])))
+                    values[i] = equationResult
+                default:
+                    continue
+                }
+                
+                operations.remove(at: i)
+                i -= 1
+            }
+            
+            i += 1
+        }
+        
+        i = 0
+        for operation in operations {
+            if operation == "^" {
+                let equationResult = Int(pow(Double(values[i]), Double(values[i+1])))
+                values[i] = equationResult
+                
+                values.remove(at: i+1)
+                operations.remove(at: i)
+                i -= 1
+            }
+            
+            i += 1
+        }
+        
+        i = 0
+        for operation in operations {
+            if operation == "*" || operation == "/" {
+                switch operation {
+                case "*":
+                    let equationResult = values[i] * values[i+1]
+                    values[i] = equationResult
+                case "/":
+                    let equationResult = values[i] / values[i+1]
+                    values[i] = equationResult
+                default:
+                    continue
+                }
+                
+                values.remove(at: i+1)
+                operations.remove(at: i)
+                i -= 1
+            }
+            
+            i += 1
+        }
+        
+        i = 0
+        for operation in operations {
+            if operation == "+" || operation == "-" {
+                switch operation {
+                case "+":
+                    let equationResult = values[i] + values[i+1]
+                    values[i] = equationResult
+                case "-":
+                    let equationResult = values[i] - values[i+1]
+                    values[i] = equationResult
+                default:
+                    continue
+                }
+                
+                values.remove(at: i+1)
+                operations.remove(at: i)
+                i -= 1
+            }
+            
+            i += 1
+        }
+        
+        return values.first
     }
     
     private func getTokenType(stringToken: String) -> TokenType? {
