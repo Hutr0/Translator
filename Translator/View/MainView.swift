@@ -43,7 +43,11 @@ class MainView: NSViewController {
     }
     
     @IBAction func executeButtonTapped(_ sender: Any) {
-        controller.execute(program: program.string)
+        controller.execute(program: program.string) { [weak self] result in
+            guard let self = self else { return }
+            
+            self.output.string = result
+        }
     }
 }
 

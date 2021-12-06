@@ -8,49 +8,22 @@
 import Foundation
 
 class Parser  {
-    let stringTokens: [String]
-    var declaredVariables: [DeclaredVariables] = []
-    
-    init(stringTokens: [String]) {
-        self.stringTokens = stringTokens
-    }
-    
-    func parse() {
-        var startIsSet: Bool = false
-        var endIsSet: Bool = false
-        var tokens: [Token] = []
+    private var declaredVariables: [DeclaredVariables] = []
+
+    func parse(stringTokens: [String]) -> String? {
+        var lastToken = Token(type: nil, value: "")
+        var lastContentToken = Token(type: nil, value: "")
         var tokensOfVar: [Token] = []
-        var lastToken: Token = Token(type: nil, value: "")
-        var lastContentToken: Token = Token(type: nil, value: "")
+        var result: String = ""
         
-        for stringToken in stringTokens {
-            let type = getTokenType(stringToken: stringToken)
-            
-            if type == nil {
-                if isNumber(string: stringToken) {
-                    tokens.append(Token(type: .number, value: stringToken))
-                } else if isWord(string: stringToken) {
-                    tokens.append(Token(type: .word, value: stringToken))
-                } else {
-                    tokens.append(Token(type: .none, value: stringToken))
-                }
-            } else {
-                tokens.append(Token(type: type, value: stringToken))
-                
-                if type == .startOfProgram && !startIsSet {
-                    startIsSet = true
-                } else if type == .endOfProgram && !endIsSet {
-                    endIsSet = true
-                } else if (type == .startOfProgram && startIsSet) || (type == .endOfProgram && endIsSet) {
-                    print("Error: So many Begin or End in the program structure.")
-                    return
-                }
-            }
+        guard let tokens = getTokens(stringTokens: stringTokens) else {
+            print(ErrorDescription.tooMuchBeginOrEnd)
+            return nil
         }
         
         if tokens.first?.type != .startOfProgram || tokens.last?.type != .endOfProgram {
-            print("Error: Missing Begin or End in the program structure.")
-            return
+            print(ErrorDescription.missedBeginOrEnd)
+            return nil
         }
         
         for token in tokens {
@@ -63,8 +36,8 @@ class Parser  {
                 lastToken = token
                 continue
             } else if lastToken.type == .startOfProgram && token.type != .zveno && token.type != .endOfLine {
-                print("Error: Zveno.")
-                return
+                print(ErrorDescription.zvenoInStructure)
+                return nil
             } else if lastToken.type == .zveno && token.type == .zveno {
                 lastToken = token
                 continue
@@ -84,8 +57,8 @@ class Parser  {
                         lastContentToken = token
                         continue
                     } else {
-                        print("Error: number Zveno.")
-                        return
+                        print(ErrorDescription.zvenoNumberInStructure)
+                        return nil
                     }
                 } else if lastToken.value == "Second" {
                     if token.type == .word {
@@ -96,12 +69,12 @@ class Parser  {
                         lastContentToken = token
                         continue
                     } else {
-                        print("Error: word Zveno.")
-                        return
+                        print(ErrorDescription.zvenoWordInStructure)
+                        return nil
                     }
                 } else {
-                    print("Error: type Zveno.")
-                    return
+                    print(ErrorDescription.zvenoTypeInStructure)
+                    return nil
                 }
             }
             
@@ -127,7 +100,11 @@ class Parser  {
                     lastContentToken = token
                     continue
                 } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .endOfLine {
-                    getVar(name: lastToken.value, tokens: tokensOfVar)
+                    guard let varString = getVarString(name: lastToken.value, tokens: tokensOfVar) else {
+                        print(ErrorDescription.getVarString)
+                        continue
+                    }
+                    result += "\(varString)\n"
                     tokensOfVar = []
                     lastContentToken = token
                     continue
@@ -144,26 +121,62 @@ class Parser  {
                     continue
                 } else if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
                     print("Complete")
-                    return
+                    return result
                 } else {
-                    print("Error: ...")
-                    return
+                    print(ErrorDescription.variableInStructure)
+                    return nil
                 }
             }
         }
+        
+        print(ErrorDescription.incorrectTermination)
+        return nil
     }
     
-    private func getVar(name: String, tokens: [Token]) {
+    /// Get tokens from string of tokens and return it
+    /// - Parameter stringTokens: String of tokens
+    /// - Returns: Tokens array
+    private func getTokens(stringTokens: [String]) -> [Token]? {
+        var startIsSet = false
+        var endIsSet = false
+        var tokens: [Token] = []
+        
+        for stringToken in stringTokens {
+            let type = getTokenType(stringToken: stringToken)
+            
+            if type == nil {
+                if isNumber(string: stringToken) {
+                    tokens.append(Token(type: .number, value: stringToken))
+                } else if isWord(string: stringToken) {
+                    tokens.append(Token(type: .word, value: stringToken))
+                } else {
+                    tokens.append(Token(type: .none, value: stringToken))
+                }
+            } else {
+                tokens.append(Token(type: type, value: stringToken))
+                
+                if type == .startOfProgram && !startIsSet {
+                    startIsSet = true
+                } else if type == .endOfProgram && !endIsSet {
+                    endIsSet = true
+                } else if (type == .startOfProgram && startIsSet) || (type == .endOfProgram && endIsSet) { return nil }
+            }
+        }
+        
+        return tokens
+    }
+    
+    private func getVarString(name: String, tokens: [Token]) -> String? {
         var values: [Int] = []
         var operations: [String] = []
-        var declared: Bool = false
+        var declared = false
         
         for token in tokens {
             switch token.type {
             case .number:
                 guard var intValue = Int(token.value) else {
-                    print("Error: Conversion error.")
-                    return
+                    print(ErrorDescription.convertToInt)
+                    return nil
                 }
                 
                 if token.minus {
@@ -187,8 +200,8 @@ class Parser  {
                 }
                 
                 if !declared {
-                    print("name = Error: \(token.value) was not declared.")
-                    return
+                    print(ErrorDescription.varNotDeclared(name: token.value))
+                    return nil
                 }
             default:
                 continue
@@ -197,12 +210,14 @@ class Parser  {
         
         let result = calculate(values: values, operations: operations)
         guard let result = result else {
-            print("Error: Cannot calculate the result.")
-            return
+            print(ErrorDescription.calculate)
+            return nil
         }
 
         self.declaredVariables.append(DeclaredVariables(name: name, value: result))
-        print("\(name) = \(result)")
+        let variable = "\(name) = \(result)"
+        print(variable)
+        return variable
     }
     
     private func calculate(values: [Int], operations: [String]) -> Int? {

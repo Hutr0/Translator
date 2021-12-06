@@ -7,16 +7,6 @@
 
 import Foundation
 
-class DeclaredVariables {
-    let name: String
-    var value: Int
-    
-    init(name: String, value: Int) {
-        self.name = name
-        self.value = value
-    }
-}
-
 class Token {
     let type: TokenType?
     var value: String

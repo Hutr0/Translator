@@ -12,6 +12,7 @@
 		E00512A8275930B0005AC832 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E00512A7275930B0005AC832 /* Assets.xcassets */; };
 		E00512AB275930B0005AC832 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E00512A9275930B0005AC832 /* Main.storyboard */; };
 		E0AB13D8275E127F00CD7147 /* ErrorDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AB13D7275E127F00CD7147 /* ErrorDescription.swift */; };
+		E0AB13DA275E3CBC00CD7147 /* DeclaredVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AB13D9275E3CBC00CD7147 /* DeclaredVariables.swift */; };
 		E0BC4E3D275972F200DC5345 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E3C275972F200DC5345 /* MainController.swift */; };
 		E0BC4E45275B8E4500DC5345 /* LexicalAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */; };
 		E0BC4E47275BB4F400DC5345 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E46275BB4F400DC5345 /* Token.swift */; };
@@ -26,6 +27,7 @@
 		E00512AA275930B0005AC832 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E00512AC275930B0005AC832 /* Translator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Translator.entitlements; sourceTree = "<group>"; };
 		E0AB13D7275E127F00CD7147 /* ErrorDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDescription.swift; sourceTree = "<group>"; };
+		E0AB13D9275E3CBC00CD7147 /* DeclaredVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclaredVariables.swift; sourceTree = "<group>"; };
 		E0BC4E3C275972F200DC5345 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexicalAnalyzer.swift; sourceTree = "<group>"; };
 		E0BC4E46275BB4F400DC5345 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
@@ -63,17 +65,42 @@
 			isa = PBXGroup;
 			children = (
 				E00512A3275930AE005AC832 /* AppDelegate.swift */,
-				E0BC4E3C275972F200DC5345 /* MainController.swift */,
-				E00512A5275930AE005AC832 /* MainView.swift */,
-				E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */,
-				E0BC4E48275BC7C600DC5345 /* Parser.swift */,
-				E0BC4E46275BB4F400DC5345 /* Token.swift */,
-				E0AB13D7275E127F00CD7147 /* ErrorDescription.swift */,
+				E0AB13DB275E3CE500CD7147 /* Model */,
+				E0AB13DC275E3CF200CD7147 /* Controller */,
+				E0AB13DD275E3D0100CD7147 /* View */,
 				E00512A7275930B0005AC832 /* Assets.xcassets */,
 				E00512A9275930B0005AC832 /* Main.storyboard */,
 				E00512AC275930B0005AC832 /* Translator.entitlements */,
 			);
 			path = Translator;
+			sourceTree = "<group>";
+		};
+		E0AB13DB275E3CE500CD7147 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E0BC4E46275BB4F400DC5345 /* Token.swift */,
+				E0AB13D9275E3CBC00CD7147 /* DeclaredVariables.swift */,
+				E0AB13D7275E127F00CD7147 /* ErrorDescription.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		E0AB13DC275E3CF200CD7147 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				E0BC4E3C275972F200DC5345 /* MainController.swift */,
+				E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */,
+				E0BC4E48275BC7C600DC5345 /* Parser.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		E0AB13DD275E3D0100CD7147 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E00512A5275930AE005AC832 /* MainView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,6 +180,7 @@
 				E00512A6275930AE005AC832 /* MainView.swift in Sources */,
 				E0BC4E3D275972F200DC5345 /* MainController.swift in Sources */,
 				E00512A4275930AE005AC832 /* AppDelegate.swift in Sources */,
+				E0AB13DA275E3CBC00CD7147 /* DeclaredVariables.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

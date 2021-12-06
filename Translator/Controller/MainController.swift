@@ -69,13 +69,19 @@ class MainController {
         }
     }
     
-    func execute(program: String) {
+    func execute(program: String, completion: @escaping (String) -> ()) {
         guard let tokens = LexicalAnalyzer.tokenize(inputProgram: program) else {
             print(ErrorDescription.lAnalizer)
             return
         }
         
-        let parser = Parser(stringTokens: tokens)
-        parser.parse()
+        let parser = Parser()
+        guard let resultString = parser.parse(stringTokens: tokens) else {
+            print(ErrorDescription.unsuccessfulParsing)
+            completion(ErrorDescription.unsuccessfulParsing)
+            return
+        }
+        
+        completion(resultString)
     }
 }
