@@ -9,16 +9,16 @@ import Foundation
 
 class LexicalAnalyzer {
     
-    static func tokenize(inputProgram: String) -> [String]? {
+    static func tokenize(inputProgram: String) -> Result {
         var tokens: [String] = []
         var temp: String = ""
         
+        var cymbolCounter = 0
         for char in inputProgram {
             let symbolClass = getSymbolClass(symbol: char)
             
             guard let symbolClass = symbolClass else {
-                print("Error: Wrong symbol.")
-                return nil
+                return Result(type: .failure, failureValue: ErrorDescription.lAnalizer)
             }
             
             if symbolClass == .separator {
@@ -39,10 +39,11 @@ class LexicalAnalyzer {
             }
             
             temp += String(char)
+            cymbolCounter += 1
         }
         
         tokens.append(temp)
-        return tokens
+        return Result(type: .success, successValue: tokens)
     }
     
     private static func getSymbolClass(symbol: Character) -> SymbolClass? {

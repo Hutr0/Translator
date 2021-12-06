@@ -70,18 +70,31 @@ class MainController {
     }
     
     func execute(program: String, completion: @escaping (String) -> ()) {
-        guard let tokens = LexicalAnalyzer.tokenize(inputProgram: program) else {
-            print(ErrorDescription.lAnalizer)
-            return
-        }
+        let result = LexicalAnalyzer.tokenize(inputProgram: program)
         
-        let parser = Parser()
-        guard let resultString = parser.parse(stringTokens: tokens) else {
-            print(ErrorDescription.unsuccessfulParsing)
-            completion(ErrorDescription.unsuccessfulParsing)
-            return
+        switch result.type {
+        case .success:
+            guard let tokens = result.successValue else { return }
+            
+            let parserResult = Parser().parse(stringTokens: tokens)
+            
+            switch parserResult.type {
+            case .success:
+                guard let values = parserResult.successValue else { return }
+                var resultString = ""
+                
+                for value in values {
+                    resultString += "\(value)\n"
+                }
+                
+                completion(resultString)
+            case .failure:
+                guard let failureValue = parserResult.failureValue else { return }
+                completion(failureValue)
+            }
+        case .failure:
+            guard let failureValue = result.failureValue else { return }
+            completion(failureValue)
         }
-        
-        completion(resultString)
     }
 }

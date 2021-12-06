@@ -8,13 +8,15 @@
 import Foundation
 
 struct ErrorDescription {
+    static let smw = "Something went wrong..."
     static let lastRow = "Error: Invalid last row element."
-    static let lAnalizer = "Error: LexicalAnalizer cannot analyze the program."
+    static let lAnalizer = "Error: LexicalAnalizer cannot analyze the program (wrong symbol)."
     static let missedBeginOrEnd = "Error: Missing Begin or End in the program structure."
     static let tooMuchBeginOrEnd = "Error: So many Begin or End in the program structure."
     static let zvenoInStructure = "Error: Program structure was broken ('Звено')."
     static let zvenoTypeInStructure = "Error: Program structure was broken (type of 'Звено')."
-    static let zvenoNumberInStructure = "Error: Program structure was broken (number in 'Звено')."
+    static let zvenoNumberInStructure = "Error: Program structure was broken (expected number in 'Звено')."
+    static let zvenoCommaInStructure = "Error: Program structure was broken (expected number after comma in 'Звено')"
     static let zvenoWordInStructure = "Error: Program structure was broken (word in 'Звено')."
     static let variableInStructure = "Error: Program structure was broken (variables)"
     static let convertToInt = "Error: Cannot be converted to Int."

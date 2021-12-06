@@ -7,23 +7,21 @@
 
 import Foundation
 
-class Parser  {
+class Parser {
     private var declaredVariables: [DeclaredVariables] = []
 
-    func parse(stringTokens: [String]) -> String? {
+    func parse(stringTokens: [String]) -> Result {
         var lastToken = Token(type: nil, value: "")
         var lastContentToken = Token(type: nil, value: "")
         var tokensOfVar: [Token] = []
-        var result: String = ""
+        var result: [String] = []
         
         guard let tokens = getTokens(stringTokens: stringTokens) else {
-            print(ErrorDescription.tooMuchBeginOrEnd)
-            return nil
+            return Result(type: .failure, failureValue: ErrorDescription.tooMuchBeginOrEnd)
         }
         
         if tokens.first?.type != .startOfProgram || tokens.last?.type != .endOfProgram {
-            print(ErrorDescription.missedBeginOrEnd)
-            return nil
+            return Result(type: .failure, failureValue: ErrorDescription.missedBeginOrEnd)
         }
         
         for token in tokens {
@@ -36,8 +34,7 @@ class Parser  {
                 lastToken = token
                 continue
             } else if lastToken.type == .startOfProgram && token.type != .zveno && token.type != .endOfLine {
-                print(ErrorDescription.zvenoInStructure)
-                return nil
+                return Result(type: .failure, failureValue: ErrorDescription.zvenoInStructure)
             } else if lastToken.type == .zveno && token.type == .zveno {
                 lastToken = token
                 continue
@@ -45,7 +42,9 @@ class Parser  {
             
             if lastToken.type == .zveno {
                 
-                if token.type == .endOfLine {
+                if lastToken.value == "First" && token.type == .endOfLine && lastContentToken.type == .comma {
+                    return Result(type: .failure, failureValue: ErrorDescription.zvenoCommaInStructure)
+                } else if token.type == .endOfLine {
                     continue
                 }
                 
@@ -57,8 +56,7 @@ class Parser  {
                         lastContentToken = token
                         continue
                     } else {
-                        print(ErrorDescription.zvenoNumberInStructure)
-                        return nil
+                        return Result(type: .failure, failureValue: ErrorDescription.zvenoNumberInStructure)
                     }
                 } else if lastToken.value == "Second" {
                     if token.type == .word {
@@ -69,12 +67,10 @@ class Parser  {
                         lastContentToken = token
                         continue
                     } else {
-                        print(ErrorDescription.zvenoWordInStructure)
-                        return nil
+                        return Result(type: .failure, failureValue: ErrorDescription.zvenoWordInStructure)
                     }
                 } else {
-                    print(ErrorDescription.zvenoTypeInStructure)
-                    return nil
+                    return Result(type: .failure, failureValue: ErrorDescription.zvenoTypeInStructure)
                 }
             }
             
@@ -100,14 +96,21 @@ class Parser  {
                     lastContentToken = token
                     continue
                 } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .endOfLine {
-                    guard let varString = getVarString(name: lastToken.value, tokens: tokensOfVar) else {
-                        print(ErrorDescription.getVarString)
+                    let varStringResult = getVarString(name: lastToken.value, tokens: tokensOfVar)
+                    
+                    switch varStringResult.type {
+                    case .success:
+                        guard let str = varStringResult.successVarValue else {
+                            return Result(type: .failure, failureValue: ErrorDescription.getVarString)
+                        }
+                        result.append(str)
+                        tokensOfVar = []
+                        lastContentToken = token
                         continue
+                    case .failure:
+                        let failureValue = varStringResult.failureValue
+                        return Result(type: .failure, failureValue: failureValue)
                     }
-                    result += "\(varString)\n"
-                    tokensOfVar = []
-                    lastContentToken = token
-                    continue
                 } else if lastContentToken.type == .endOfLine && token.type == .word {
                     lastContentToken = token
                     continue
@@ -121,16 +124,14 @@ class Parser  {
                     continue
                 } else if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
                     print("Complete")
-                    return result
+                    return Result(type: .success, successValue: result)
                 } else {
-                    print(ErrorDescription.variableInStructure)
-                    return nil
+                    return Result(type: .failure, failureValue: ErrorDescription.variableInStructure)
                 }
             }
         }
         
-        print(ErrorDescription.incorrectTermination)
-        return nil
+        return Result(type: .failure, failureValue: ErrorDescription.incorrectTermination)
     }
     
     /// Get tokens from string of tokens and return it
@@ -166,7 +167,7 @@ class Parser  {
         return tokens
     }
     
-    private func getVarString(name: String, tokens: [Token]) -> String? {
+    private func getVarString(name: String, tokens: [Token]) -> Result {
         var values: [Int] = []
         var operations: [String] = []
         var declared = false
@@ -175,8 +176,7 @@ class Parser  {
             switch token.type {
             case .number:
                 guard var intValue = Int(token.value) else {
-                    print(ErrorDescription.convertToInt)
-                    return nil
+                    return Result(type: .failure, failureValue: ErrorDescription.convertToInt)
                 }
                 
                 if token.minus {
@@ -200,8 +200,7 @@ class Parser  {
                 }
                 
                 if !declared {
-                    print(ErrorDescription.varNotDeclared(name: token.value))
-                    return nil
+                    return Result(type: .failure, failureValue: ErrorDescription.varNotDeclared(name: token.value))
                 }
             default:
                 continue
@@ -210,14 +209,13 @@ class Parser  {
         
         let result = calculate(values: values, operations: operations)
         guard let result = result else {
-            print(ErrorDescription.calculate)
-            return nil
+            return Result(type: .failure, failureValue: ErrorDescription.calculate)
         }
 
         self.declaredVariables.append(DeclaredVariables(name: name, value: result))
         let variable = "\(name) = \(result)"
         print(variable)
-        return variable
+        return Result(type: .success, successVarValue: variable)
     }
     
     private func calculate(values: [Int], operations: [String]) -> Int? {
