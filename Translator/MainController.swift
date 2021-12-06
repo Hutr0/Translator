@@ -50,7 +50,7 @@ class MainController {
         guard let last = last,
               let intLast = Int(last)
         else {
-            print("Error: Invalid last row element.")
+            print(ErrorDescription.lastRow)
             return
         }
         
@@ -58,28 +58,22 @@ class MainController {
         completion(num)
     }
     
-    func deleteRows(_ self: MainView) {
-        guard let last = self.rowsOfProgram.string.components(separatedBy: "\n").last else {
-            print("Error: Invalid last row element.")
+    func deleteRows(last: String?, completion: @escaping () -> ()) {
+        guard let last = last else {
+            print(ErrorDescription.lastRow)
             return
         }
         
         for _ in 0...last.count {
-            self.rowsOfProgram.string.removeLast()
-        }
-        
-        let rowsCount = self.rowsOfProgram.string.components(separatedBy: "\n").count
-        let programRowsCount = self.program.string.components(separatedBy: "\n").count
-        
-        if rowsCount > programRowsCount {
-            deleteRows(self)
+            completion()
         }
     }
     
-    func startAnalyze(program: String) {
-        let lAnalizer = LexicalAnalyzer(inputProgram: program)
-        
-        guard let tokens = lAnalizer.tokenize() else { return }
+    func execute(program: String) {
+        guard let tokens = LexicalAnalyzer.tokenize(inputProgram: program) else {
+            print(ErrorDescription.lAnalizer)
+            return
+        }
         
         let parser = Parser(stringTokens: tokens)
         parser.parse()

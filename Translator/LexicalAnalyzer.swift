@@ -8,25 +8,20 @@
 import Foundation
 
 class LexicalAnalyzer {
-    let inputProgram: String
     
-    init(inputProgram: String) {
-        self.inputProgram = inputProgram
-    }
-    
-    func tokenize() -> [String]? {
+    static func tokenize(inputProgram: String) -> [String]? {
         var tokens: [String] = []
         var temp: String = ""
         
         for char in inputProgram {
-            let id = getSybolType(symbol: char)
+            let symbolClass = getSymbolClass(symbol: char)
             
-            guard let id = id else {
+            guard let symbolClass = symbolClass else {
                 print("Error: Wrong symbol.")
                 return nil
             }
             
-            if id == .separator {
+            if symbolClass == .separator {
                 if temp != "" {
                     tokens.append(temp)
                     temp = ""
@@ -34,7 +29,7 @@ class LexicalAnalyzer {
                 continue
             }
             
-            if id == .modifier {
+            if symbolClass == .modifier {
                 if temp != "" {
                     tokens.append(temp)
                     temp = ""
@@ -50,7 +45,7 @@ class LexicalAnalyzer {
         return tokens
     }
     
-    func getSybolType(symbol: Character) -> SymbolClass? {
+    private static func getSymbolClass(symbol: Character) -> SymbolClass? {
         switch symbol {
         case "a"..."z", "A"..."Z":
             return .value
@@ -64,16 +59,16 @@ class LexicalAnalyzer {
             return .modifier
         case ",":
             return .modifier
-        case " ":
-            return .separator
         case "\n":
             return .modifier
+        case " ":
+            return .separator
         default:
             return nil
         }
     }
     
-    enum SymbolClass {
+    private enum SymbolClass {
         case value
         case separator
         case modifier

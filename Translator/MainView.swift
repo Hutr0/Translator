@@ -25,17 +25,16 @@ class MainView: NSViewController {
         
         program.delegate = self
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(boundsDidChangeNotification),
-                                               name: NSView.boundsDidChangeNotification,
-                                               object: programScrollView.contentView)
-        
         languageFormat.string = controller.language
+        program.string = controller.testProgram
         
         rowsOfProgram.alignment = .right
         rowsOfProgram.string = "1"
         
-        program.string = controller.testProgram
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(boundsDidChangeNotification),
+                                               name: NSView.boundsDidChangeNotification,
+                                               object: programScrollView.contentView)
     }
     
     @IBAction func clearButtonTapped(_ sender: Any) {
@@ -44,25 +43,33 @@ class MainView: NSViewController {
     }
     
     @IBAction func executeButtonTapped(_ sender: Any) {
-        controller.startAnalyze(program: program.string)
+        controller.execute(program: program.string)
     }
 }
 
 extension MainView: NSTextViewDelegate {
     
     func textDidChange(_ notification: Notification) {
-        let rowsCount = self.rowsOfProgram.string.components(separatedBy: "\n").count
-        let programRowsCount = self.program.string.components(separatedBy: "\n").count
-        
-        if rowsCount < programRowsCount {
+        while true {
+            let rowsCount = self.rowsOfProgram.string.components(separatedBy: "\n").count
+            let programRowsCount = self.program.string.components(separatedBy: "\n").count
             let last = self.rowsOfProgram.string.components(separatedBy: "\n").last
-            controller.addRows(last: last) { [weak self] num in
-                guard let self = self else { return }
-                
-                self.rowsOfProgram.string += "\n\(num)"
+            
+            if rowsCount < programRowsCount {
+                controller.addRows(last: last) { [weak self] num in
+                    guard let self = self else { return }
+                    
+                    self.rowsOfProgram.string += "\n\(num)"
+                }
+            } else if rowsCount > programRowsCount {
+                controller.deleteRows(last: last) { [weak self] in
+                    guard let self = self else { return }
+                    
+                    self.rowsOfProgram.string.removeLast()
+                }
+            } else {
+                return
             }
-        } else if rowsCount > programRowsCount {
-            controller.deleteRows(self)
         }
     }
     
