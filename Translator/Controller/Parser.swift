@@ -100,7 +100,9 @@ class Parser {
                     
                     switch varStringResult.type {
                     case .success:
-                        guard let str = varStringResult.successVarValue else {
+                        guard let strings = varStringResult.successValue,
+                              let str = strings.first
+                        else {
                             return Result(type: .failure, failureValue: ErrorDescription.getVarString)
                         }
                         result.append(str)
@@ -215,7 +217,7 @@ class Parser {
         self.declaredVariables.append(DeclaredVariables(name: name, value: result))
         let variable = "\(name) = \(result)"
         print(variable)
-        return Result(type: .success, successVarValue: variable)
+        return Result(type: .success, successValue: [variable])
     }
     
     private func calculate(values: [Int], operations: [String]) -> Int? {

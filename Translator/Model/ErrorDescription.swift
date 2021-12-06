@@ -28,4 +28,8 @@ struct ErrorDescription {
     static func varNotDeclared(name: String) -> String{
         return "Error: \(name) was not declared."
     }
+    
+    static func wrongSymbol(symbol: Character) -> String{
+        return "Error: LexicalAnalizer cannot analyze the program. Wrong symbol: '\(symbol)'."
+    }
 }

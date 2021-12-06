@@ -18,7 +18,7 @@ class LexicalAnalyzer {
             let symbolClass = getSymbolClass(symbol: char)
             
             guard let symbolClass = symbolClass else {
-                return Result(type: .failure, failureValue: ErrorDescription.lAnalizer)
+                return Result(type: .failure, failureValue: ErrorDescription.wrongSymbol(symbol: char))
             }
             
             if symbolClass == .separator {

@@ -10,13 +10,11 @@ import Foundation
 class Result {
     let type: ResultType
     let successValue: [String]?
-    let successVarValue: String?
     let failureValue: String?
     
-    init(type: ResultType, successValue: [String]? = nil, successVarValue: String? = nil, failureValue: String? = nil) {
+    init(type: ResultType, successValue: [String]? = nil, failureValue: String? = nil) {
         self.type = type
         self.successValue = successValue
-        self.successVarValue = successVarValue
         self.failureValue = failureValue
     }
 }
