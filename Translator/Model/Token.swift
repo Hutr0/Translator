@@ -8,7 +8,7 @@
 import Foundation
 
 class Token {
-    let type: TokenType?
+    var type: TokenType?
     var value: String
     var minus: Bool = false
     
@@ -22,6 +22,7 @@ enum TokenType {
     case startOfProgram
     case endOfProgram
     case zveno
+    case poslednee
     case equal
     case word
     case number

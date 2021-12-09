@@ -13,6 +13,8 @@ class Parser {
     func parse(stringTokens: [String]) -> Result {
         var lastToken = Token(type: nil, value: "")
         var lastContentToken = Token(type: nil, value: "")
+        var firstNumbersCounter = 0
+        var secondWordsCounter = 0
         var tokensOfVar: [Token] = []
         var result: [String] = []
         
@@ -33,26 +35,43 @@ class Parser {
             if lastToken.type == .startOfProgram && token.type == .zveno {
                 lastToken = token
                 continue
+            } else if lastToken.type == .startOfProgram && token.type == .endOfLine {
+                continue
             } else if lastToken.type == .startOfProgram && token.type != .zveno && token.type != .endOfLine {
                 return Result(type: .failure, failureValue: ErrorDescription.zvenoInStructure)
             } else if lastToken.type == .zveno && token.type == .zveno {
+                
+                if lastContentToken.type == nil {
+                    return Result(type: .failure, failureValue: ErrorDescription.zvenoInStructure)
+                }
+                
+                lastContentToken = Token(type: nil, value: "")
                 lastToken = token
+                firstNumbersCounter = 0
+                secondWordsCounter = 0
                 continue
             }
             
             if lastToken.type == .zveno {
-                
                 if lastToken.value == "First" && token.type == .endOfLine && lastContentToken.type == .comma {
                     return Result(type: .failure, failureValue: ErrorDescription.zvenoCommaInStructure)
-                } else if token.type == .endOfLine {
-                    continue
                 }
                 
                 if lastToken.value == "First" {
                     if token.type == .number {
                         lastContentToken = token
+                        firstNumbersCounter += 1
                         continue
                     } else if lastContentToken.type == .number && token.type == .comma {
+                        lastContentToken = token
+                        continue
+                    } else if token.type == .endOfLine {
+                        continue
+                    } else if token.type == .word {
+                        if firstNumbersCounter < 1 {
+                            return Result(type: .failure, failureValue: ErrorDescription.zvenoNumberInStructure)
+                        }
+                        lastToken = token
                         lastContentToken = token
                         continue
                     } else {
@@ -61,9 +80,17 @@ class Parser {
                 } else if lastToken.value == "Second" {
                     if token.type == .word {
                         lastContentToken = token
+                        secondWordsCounter += 1
                         continue
-                    } else if lastContentToken.type == .word && token.value == "=" {
-                        lastToken = lastContentToken
+                    } else if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
+                        return Result(type: .failure, failureValue: ErrorDescription.zvenoWordInStructure)
+                    } else if token.type == .endOfLine {
+                        continue
+                    } else if token.type == .equal {
+                        if secondWordsCounter < 2 {
+                            return Result(type: .failure, failureValue: ErrorDescription.zvenoWordInStructure)
+                        }
+                        lastToken = Token(type: .word, value: lastContentToken.value)
                         lastContentToken = token
                         continue
                     } else {
