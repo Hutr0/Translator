@@ -95,15 +95,17 @@ class MainController {
                 
                 var tokenCount = 0
                 var rowCount = 0
+                var lastToken: String = "<ERROR>"
                 for token in tokens {
                     tokenCount += 1
                     if tokenCount == failurePlace {
-                        completion("[\(rowCount+1) row]: \(failureValue)")
+                        completion("[After '\(lastToken)' in \(rowCount+1) row] \(failureValue)")
                         return
                     }
                     if token == "\n" {
                         rowCount += 1
                     }
+                    lastToken = token
                 }
                 
                 completion(failureValue)
