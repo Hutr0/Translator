@@ -13,12 +13,13 @@ class LexicalAnalyzer {
         var tokens: [String] = []
         var temp: String = ""
         
-        var cymbolCounter = 0
+        var symbolCount = 0
         for char in inputProgram {
+            symbolCount += 1
             let symbolClass = getSymbolClass(symbol: char)
             
             guard let symbolClass = symbolClass else {
-                return Result(type: .failure, failureValue: ErrorDescription.wrongSymbol(symbol: char))
+                return Result(failureValue: ErrorDescription.wrongSymbol(symbol: char), failurePlace: symbolCount)
             }
             
             if symbolClass == .separator {
@@ -39,11 +40,10 @@ class LexicalAnalyzer {
             }
             
             temp += String(char)
-            cymbolCounter += 1
         }
         
         tokens.append(temp)
-        return Result(type: .success, successValue: tokens)
+        return Result(successValue: tokens)
     }
     
     private static func getSymbolClass(symbol: Character) -> SymbolClass? {

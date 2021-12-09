@@ -82,18 +82,50 @@ class MainController {
             case .success:
                 guard let values = parserResult.successValue else { return }
                 var resultString = ""
-                
+
                 for value in values {
                     resultString += "\(value)\n"
                 }
-                
+
                 completion(resultString)
             case .failure:
-                guard let failureValue = parserResult.failureValue else { return }
+                guard let failureValue = parserResult.failureValue,
+                        let failurePlace = parserResult.failurePlace
+                else { return }
+                
+                var tokenCount = 0
+                var rowCount = 0
+                for token in tokens {
+                    tokenCount += 1
+                    if tokenCount == failurePlace {
+                        completion("[\(rowCount+1) row]: \(failureValue)")
+                        return
+                    }
+                    if token == "\n" {
+                        rowCount += 1
+                    }
+                }
+                
                 completion(failureValue)
             }
         case .failure:
-            guard let failureValue = result.failureValue else { return }
+            guard let failureValue = result.failureValue,
+                    let failurePlace = result.failurePlace
+            else { return }
+            
+            var i = 0
+            var rowCount = 0
+            for symbol in program {
+                i += 1
+                if i == failurePlace {
+                    completion("[\(rowCount+1) row]: \(failureValue)")
+                    return
+                }
+                if symbol == "\n" {
+                    rowCount += 1
+                }
+            }
+            
             completion(failureValue)
         }
     }

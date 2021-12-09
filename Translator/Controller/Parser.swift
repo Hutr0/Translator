@@ -19,14 +19,16 @@ class Parser {
         var result: [String] = []
         
         guard let tokens = getTokens(stringTokens: stringTokens) else {
-            return Result(type: .failure, failureValue: ErrorDescription.tooMuchBeginOrEnd)
+            return Result(failureValue: ErrorDescription.tooMuchBeginOrEnd, failurePlace: -1)
         }
         
         if tokens.first?.type != .startOfProgram || tokens.last?.type != .endOfProgram {
-            return Result(type: .failure, failureValue: ErrorDescription.missedBeginOrEnd)
+            return Result(failureValue: ErrorDescription.missedBeginOrEnd, failurePlace: -1)
         }
         
+        var tokenCount = 0
         for token in tokens {
+            tokenCount += 1
             if token.type == .startOfProgram {
                 lastToken = token
                 continue
@@ -38,11 +40,11 @@ class Parser {
             } else if lastToken.type == .startOfProgram && token.type == .endOfLine {
                 continue
             } else if lastToken.type == .startOfProgram && token.type != .zveno && token.type != .endOfLine {
-                return Result(type: .failure, failureValue: ErrorDescription.zvenoInStructure)
+                return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenCount)
             } else if lastToken.type == .zveno && token.type == .zveno {
                 
                 if lastContentToken.type == nil {
-                    return Result(type: .failure, failureValue: ErrorDescription.zvenoInStructure)
+                    return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenCount)
                 }
                 
                 lastContentToken = Token(type: nil, value: "")
@@ -54,7 +56,7 @@ class Parser {
             
             if lastToken.type == .zveno {
                 if lastToken.value == "First" && token.type == .endOfLine && lastContentToken.type == .comma {
-                    return Result(type: .failure, failureValue: ErrorDescription.zvenoCommaInStructure)
+                    return Result(failureValue: ErrorDescription.zvenoCommaInStructure, failurePlace: tokenCount)
                 }
                 
                 if lastToken.value == "First" {
@@ -69,13 +71,13 @@ class Parser {
                         continue
                     } else if token.type == .word {
                         if firstNumbersCounter < 1 {
-                            return Result(type: .failure, failureValue: ErrorDescription.zvenoNumberInStructure)
+                            return Result(failureValue: ErrorDescription.zvenoNumberInStructure, failurePlace: tokenCount)
                         }
                         lastToken = token
                         lastContentToken = token
                         continue
                     } else {
-                        return Result(type: .failure, failureValue: ErrorDescription.zvenoNumberInStructure)
+                        return Result(failureValue: ErrorDescription.zvenoNumberInStructure, failurePlace: tokenCount)
                     }
                 } else if lastToken.value == "Second" {
                     if token.type == .word {
@@ -83,21 +85,21 @@ class Parser {
                         secondWordsCounter += 1
                         continue
                     } else if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
-                        return Result(type: .failure, failureValue: ErrorDescription.zvenoWordInStructure)
+                        return Result(failureValue: ErrorDescription.zvenoWordInStructure, failurePlace: tokenCount)
                     } else if token.type == .endOfLine {
                         continue
                     } else if token.type == .equal {
                         if secondWordsCounter < 2 {
-                            return Result(type: .failure, failureValue: ErrorDescription.zvenoWordInStructure)
+                            return Result(failureValue: ErrorDescription.zvenoWordInStructure, failurePlace: tokenCount)
                         }
                         lastToken = Token(type: .word, value: lastContentToken.value)
                         lastContentToken = token
                         continue
                     } else {
-                        return Result(type: .failure, failureValue: ErrorDescription.zvenoWordInStructure)
+                        return Result(failureValue: ErrorDescription.zvenoWordInStructure, failurePlace: tokenCount)
                     }
                 } else {
-                    return Result(type: .failure, failureValue: ErrorDescription.zvenoTypeInStructure)
+                    return Result(failureValue: ErrorDescription.zvenoTypeInStructure, failurePlace: tokenCount)
                 }
             }
             
@@ -130,7 +132,7 @@ class Parser {
                         guard let strings = varStringResult.successValue,
                               let str = strings.first
                         else {
-                            return Result(type: .failure, failureValue: ErrorDescription.getVarString)
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenCount)
                         }
                         result.append(str)
                         tokensOfVar = []
@@ -138,7 +140,7 @@ class Parser {
                         continue
                     case .failure:
                         let failureValue = varStringResult.failureValue
-                        return Result(type: .failure, failureValue: failureValue)
+                        return Result(failureValue: failureValue ?? "Unknown error...", failurePlace: tokenCount)
                     }
                 } else if lastContentToken.type == .endOfLine && token.type == .word {
                     lastContentToken = token
@@ -153,14 +155,14 @@ class Parser {
                     continue
                 } else if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
                     print("Complete")
-                    return Result(type: .success, successValue: result)
+                    return Result(successValue: result)
                 } else {
-                    return Result(type: .failure, failureValue: ErrorDescription.variableInStructure)
+                    return Result(failureValue: ErrorDescription.variableInStructure, failurePlace: tokenCount)
                 }
             }
         }
         
-        return Result(type: .failure, failureValue: ErrorDescription.incorrectTermination)
+        return Result(failureValue: ErrorDescription.incorrectTermination, failurePlace: -1)
     }
     
     /// Get tokens from string of tokens and return it
@@ -205,7 +207,7 @@ class Parser {
             switch token.type {
             case .number:
                 guard var intValue = Int(token.value) else {
-                    return Result(type: .failure, failureValue: ErrorDescription.convertToInt)
+                    return Result(failureValue: ErrorDescription.convertToInt, failurePlace: -1)
                 }
                 
                 if token.minus {
@@ -229,7 +231,7 @@ class Parser {
                 }
                 
                 if !declared {
-                    return Result(type: .failure, failureValue: ErrorDescription.varNotDeclared(name: token.value))
+                    return Result(failureValue: ErrorDescription.varNotDeclared(name: token.value), failurePlace: -1)
                 }
             default:
                 continue
@@ -238,13 +240,13 @@ class Parser {
         
         let result = calculate(values: values, operations: operations)
         guard let result = result else {
-            return Result(type: .failure, failureValue: ErrorDescription.calculate)
+            return Result(failureValue: ErrorDescription.calculate, failurePlace: -1)
         }
 
         self.declaredVariables.append(DeclaredVariables(name: name, value: result))
         let variable = "\(name) = \(result)"
         print(variable)
-        return Result(type: .success, successValue: [variable])
+        return Result(successValue: [variable])
     }
     
     private func calculate(values: [Int], operations: [String]) -> Int? {
@@ -270,28 +272,28 @@ class Parser {
                 default:
                     continue
                 }
-                
+
                 operations.remove(at: i)
                 i -= 1
             }
-            
+
             i += 1
         }
-        
+
         i = 0
         for operation in operations {
             if operation == "^" {
                 let equationResult = Int(pow(Double(values[i]), Double(values[i+1])))
                 values[i] = equationResult
-                
+
                 values.remove(at: i+1)
                 operations.remove(at: i)
                 i -= 1
             }
-            
+
             i += 1
         }
-        
+
         i = 0
         for operation in operations {
             if operation == "*" || operation == "/" {
@@ -305,15 +307,15 @@ class Parser {
                 default:
                     continue
                 }
-                
+
                 values.remove(at: i+1)
                 operations.remove(at: i)
                 i -= 1
             }
-            
+
             i += 1
         }
-        
+
         i = 0
         for operation in operations {
             if operation == "+" || operation == "-" {
@@ -327,18 +329,18 @@ class Parser {
                 default:
                     continue
                 }
-                
+
                 values.remove(at: i+1)
                 operations.remove(at: i)
                 i -= 1
             }
-            
+
             i += 1
         }
-        
+
         return values.first
     }
-    
+
     private func getTokenType(stringToken: String) -> TokenType? {
         switch stringToken {
         case "Begin":
@@ -361,14 +363,14 @@ class Parser {
             return nil
         }
     }
-    
+
     private func isNumber(string: String) -> Bool {
         return Int(string) != nil
     }
-    
+
     private func isWord(string: String) -> Bool {
         let pattern = "^([a-zA-Z]){1,}([a-zA-Z0-7])*"
-        
+
         do {
             let reg = try NSRegularExpression(pattern: pattern)
             let result = reg.matches(in: string, range: NSRange(string.startIndex..., in: string))
