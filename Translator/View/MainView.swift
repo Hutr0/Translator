@@ -44,6 +44,7 @@ class MainView: NSViewController {
     @IBAction func clearButtonTapped(_ sender: NSButton) {
         rowsOfProgram.string = "1"
         program.string = ""
+        output.string = ""
     }
     
     @IBAction func executeButtonTapped(_ sender: NSButton) {

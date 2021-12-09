@@ -927,6 +927,7 @@
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
+                                                                <color key="bezelColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
                                                                 <connections>
                                                                     <action selector="clearButtonTapped:" target="XfG-lQ-9wD" id="YxS-5W-oZD"/>
                                                                 </connections>
@@ -937,6 +938,7 @@
                                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                     <font key="font" metaFont="system"/>
                                                                 </buttonCell>
+                                                                <color key="bezelColor" name="systemCyanColor" catalog="System" colorSpace="catalog"/>
                                                                 <connections>
                                                                     <action selector="executeButtonTapped:" target="XfG-lQ-9wD" id="f0p-Hy-BjP"/>
                                                                 </connections>

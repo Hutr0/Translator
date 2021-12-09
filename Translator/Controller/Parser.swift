@@ -111,8 +111,8 @@ class Parser {
                 } else if (lastContentToken.type == .equal || lastContentToken.type == .operation || lastContentToken.type == .function) && token.value == "-" {
                     lastContentToken = token
                     continue
-                } else if lastContentToken.value == "-" && (token.type == .number || token.type == .word) {
-                    token.minus = true
+                } else if lastContentToken.value == "-" && (token.type == .number || token.type == .word || token.type == .function) {
+                    token.minus.toggle()
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
@@ -215,8 +215,14 @@ class Parser {
                 }
                 
                 values.append(intValue)
-            case .operation, .function:
+            case .operation:
                 operations.append(token.value)
+            case .function:
+                if token.minus {
+                    operations.append("-\(token.value)")
+                } else {
+                    operations.append(token.value)
+                }
             case .word:
                 for declaredVariable in declaredVariables {
                     if token.value == declaredVariable.name {
@@ -255,7 +261,8 @@ class Parser {
         
         var i = 0
         for operation in operations {
-            if operation == "sin" || operation == "cos" || operation == "tg" || operation == "ctg" {
+            if operation == "sin" || operation == "cos" || operation == "tg" || operation == "ctg" ||
+                operation == "-sin" || operation == "-cos" || operation == "-tg" || operation == "-ctg" {
                 switch operation {
                 case "sin":
                     let equationResult = Int(sin(Double(values[i])))
@@ -268,6 +275,18 @@ class Parser {
                     values[i] = equationResult
                 case "ctg":
                     let equationResult = Int(1 / tan(Double(values[i])))
+                    values[i] = equationResult
+                case "-sin":
+                    let equationResult = Int((sin(Double(values[i]))) * -1)
+                    values[i] = equationResult
+                case "-cos":
+                    let equationResult = Int((cos(Double(values[i]))) * -1)
+                    values[i] = equationResult
+                case "-tg":
+                    let equationResult = Int((tan(Double(values[i]))) * -1)
+                    values[i] = equationResult
+                case "-ctg":
+                    let equationResult = Int((1 / tan(Double(values[i]))) * -1)
                     values[i] = equationResult
                 default:
                     continue
