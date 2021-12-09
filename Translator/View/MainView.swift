@@ -26,7 +26,6 @@ class MainView: NSViewController {
         program.delegate = self
         
         languageFormat.string = controller.language
-        program.string = controller.testProgram
         
         rowsOfProgram.alignment = .right
         rowsOfProgram.string = "1"
@@ -37,12 +36,17 @@ class MainView: NSViewController {
                                                object: programScrollView.contentView)
     }
     
-    @IBAction func clearButtonTapped(_ sender: Any) {
+    @IBAction func testProgramButton(_ sender: NSButton) {
+        program.string = controller.testProgram
+        setCorrectlyRowsCount()
+    }
+    
+    @IBAction func clearButtonTapped(_ sender: NSButton) {
         rowsOfProgram.string = "1"
         program.string = ""
     }
     
-    @IBAction func executeButtonTapped(_ sender: Any) {
+    @IBAction func executeButtonTapped(_ sender: NSButton) {
         controller.execute(program: program.string) { [weak self] result in
             guard let self = self else { return }
             
@@ -54,6 +58,10 @@ class MainView: NSViewController {
 extension MainView: NSTextViewDelegate {
     
     func textDidChange(_ notification: Notification) {
+       setCorrectlyRowsCount()
+    }
+    
+    private func setCorrectlyRowsCount() {
         while true {
             let rowsCount = self.rowsOfProgram.string.components(separatedBy: "\n").count
             let programRowsCount = self.program.string.components(separatedBy: "\n").count
