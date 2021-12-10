@@ -42,7 +42,7 @@ class MainController {
     ar13 = 12 * 2
     arg = 14^2
     p2 = param1 / 2
-    p = sin p2
+    p = ctg p2
     End
     """
     

@@ -9,9 +9,9 @@ import Foundation
 
 class DeclaredVariables {
     let name: String
-    var value: Int
+    var value: Double
     
-    init(name: String, value: Int) {
+    init(name: String, value: Double) {
         self.name = name
         self.value = value
     }

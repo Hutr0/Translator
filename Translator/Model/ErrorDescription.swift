@@ -25,6 +25,7 @@ struct ErrorDescription {
     static let getVarString = "Error: Cannot get var string."
     static let incorrectTermination = "Error: The program was terminated incorrectly."
     static let unsuccessfulParsing = "Error: Unsuccessful parsing."
+    static let minus = "Error: Too many minuses."
     
     static func varNotDeclared(name: String) -> String{
         return "Error: \(name) was not declared."

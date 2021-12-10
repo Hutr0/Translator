@@ -108,11 +108,13 @@ class Parser {
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
+                } else if lastContentToken.value == "-" && token.value == "-" {
+                    return Result(failureValue: ErrorDescription.minus, failurePlace: tokenCount)
                 } else if (lastContentToken.type == .equal || lastContentToken.type == .operation || lastContentToken.type == .function) && token.value == "-" {
                     lastContentToken = token
                     continue
                 } else if lastContentToken.value == "-" && (token.type == .number || token.type == .word || token.type == .function) {
-                    token.minus.toggle()
+                    token.minus = true
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
@@ -120,7 +122,7 @@ class Parser {
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
-                } else if lastContentToken.type == .operation && (token.type == .number || token.type == .word) {
+                } else if lastContentToken.type == .operation && (token.type == .number || token.type == .word || token.type == .function) {
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
@@ -199,24 +201,24 @@ class Parser {
     }
     
     private func getVarString(name: String, tokens: [Token]) -> Result {
-        var values: [Int] = []
+        var values: [Double] = []
         var operations: [String] = []
         var declared = false
         
         for token in tokens {
             switch token.type {
+            case .operation:
+                operations.append(token.value)
             case .number:
-                guard var intValue = Int(token.value) else {
+                guard var doubleValue = Double(token.value) else {
                     return Result(failureValue: ErrorDescription.convertToInt, failurePlace: -1)
                 }
                 
                 if token.minus {
-                    intValue *= -1
+                    doubleValue *= -1
                 }
                 
-                values.append(intValue)
-            case .operation:
-                operations.append(token.value)
+                values.append(Double(doubleValue))
             case .function:
                 if token.minus {
                     operations.append("-\(token.value)")
@@ -255,7 +257,7 @@ class Parser {
         return Result(successValue: [variable])
     }
     
-    private func calculate(values: [Int], operations: [String]) -> Int? {
+    private func calculate(values: [Double], operations: [String]) -> Double? {
         var values = values
         var operations = operations
         
@@ -265,28 +267,28 @@ class Parser {
                 operation == "-sin" || operation == "-cos" || operation == "-tg" || operation == "-ctg" {
                 switch operation {
                 case "sin":
-                    let equationResult = Int(sin(Double(values[i])))
+                    let equationResult = sin(values[i] * Double.pi / 180)
                     values[i] = equationResult
                 case "cos":
-                    let equationResult = Int(cos(Double(values[i])))
+                    let equationResult = cos(values[i] * Double.pi / 180)
                     values[i] = equationResult
                 case "tg":
-                    let equationResult = Int(tan(Double(values[i])))
+                    let equationResult = tan(values[i] * Double.pi / 180)
                     values[i] = equationResult
                 case "ctg":
-                    let equationResult = Int(1 / tan(Double(values[i])))
+                    let equationResult = 1 / (values[i] * Double.pi / 180)
                     values[i] = equationResult
                 case "-sin":
-                    let equationResult = Int((sin(Double(values[i]))) * -1)
+                    let equationResult = (sin(values[i] * Double.pi / 180)) * -1
                     values[i] = equationResult
                 case "-cos":
-                    let equationResult = Int((cos(Double(values[i]))) * -1)
+                    let equationResult = (cos(values[i] * Double.pi / 180)) * -1
                     values[i] = equationResult
                 case "-tg":
-                    let equationResult = Int((tan(Double(values[i]))) * -1)
+                    let equationResult = (tan(values[i] * Double.pi / 180)) * -1
                     values[i] = equationResult
                 case "-ctg":
-                    let equationResult = Int((1 / tan(Double(values[i]))) * -1)
+                    let equationResult = (1 / (values[i] * Double.pi / 180)) * -1
                     values[i] = equationResult
                 default:
                     continue
@@ -302,7 +304,7 @@ class Parser {
         i = 0
         for operation in operations {
             if operation == "^" {
-                let equationResult = Int(pow(Double(values[i]), Double(values[i+1])))
+                let equationResult = pow(values[i], values[i+1])
                 values[i] = equationResult
 
                 values.remove(at: i+1)
@@ -339,11 +341,8 @@ class Parser {
         for operation in operations {
             if operation == "+" || operation == "-" {
                 switch operation {
-                case "+":
+                case "+", "-":
                     let equationResult = values[i] + values[i+1]
-                    values[i] = equationResult
-                case "-":
-                    let equationResult = values[i] - values[i+1]
                     values[i] = equationResult
                 default:
                     continue
