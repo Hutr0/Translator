@@ -40,7 +40,7 @@ class Parser {
             } else if lastToken.type == .startOfProgram && token.type == .endOfLine {
                 continue
             } else if lastToken.type == .startOfProgram && token.type != .zveno && token.type != .endOfLine {
-                return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenCount)
+                return Result(failureValue: ErrorDescription.missedZveno, failurePlace: tokenCount)
             } else if lastToken.type == .zveno && token.type == .zveno {
                 
                 if lastContentToken.type == nil {
@@ -56,7 +56,7 @@ class Parser {
             
             if lastToken.type == .zveno {
                 if lastToken.value == "First" && token.type == .endOfLine && lastContentToken.type == .comma {
-                    return Result(failureValue: ErrorDescription.zvenoCommaInStructure, failurePlace: tokenCount)
+                    return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenCount)
                 }
                 
                 if lastToken.value == "First" {
@@ -71,13 +71,13 @@ class Parser {
                         continue
                     } else if token.type == .word {
                         if firstNumbersCounter < 1 {
-                            return Result(failureValue: ErrorDescription.zvenoNumberInStructure, failurePlace: tokenCount)
+                            return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenCount)
                         }
                         lastToken = token
                         lastContentToken = token
                         continue
                     } else {
-                        return Result(failureValue: ErrorDescription.zvenoNumberInStructure, failurePlace: tokenCount)
+                        return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenCount)
                     }
                 } else if lastToken.value == "Second" {
                     if token.type == .word {
@@ -85,21 +85,21 @@ class Parser {
                         secondWordsCounter += 1
                         continue
                     } else if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
-                        return Result(failureValue: ErrorDescription.zvenoWordInStructure, failurePlace: tokenCount)
+                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenCount)
                     } else if token.type == .endOfLine {
                         continue
                     } else if token.type == .equal {
                         if secondWordsCounter < 2 {
-                            return Result(failureValue: ErrorDescription.zvenoWordInStructure, failurePlace: tokenCount)
+                            return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenCount)
                         }
                         lastToken = Token(type: .word, value: lastContentToken.value)
                         lastContentToken = token
                         continue
                     } else {
-                        return Result(failureValue: ErrorDescription.zvenoWordInStructure, failurePlace: tokenCount)
+                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenCount)
                     }
                 } else {
-                    return Result(failureValue: ErrorDescription.zvenoTypeInStructure, failurePlace: tokenCount)
+                    return Result(failureValue: ErrorDescription.zvenoElememtMissedInStructure, failurePlace: tokenCount)
                 }
             }
             
@@ -211,7 +211,7 @@ class Parser {
                 operations.append(token.value)
             case .number:
                 guard var doubleValue = Double(token.value) else {
-                    return Result(failureValue: ErrorDescription.convertToInt, failurePlace: -1)
+                    return Result(failureValue: ErrorDescription.convertToDouble(value: token.value), failurePlace: -1)
                 }
                 
                 if token.minus {
