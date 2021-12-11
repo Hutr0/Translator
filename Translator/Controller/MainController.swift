@@ -99,13 +99,19 @@ class MainController {
                 for token in tokens {
                     tokenCount += 1
                     if tokenCount == failurePlace {
-                        completion("[After '\(lastToken)' in \(rowCount+1) row] \(failureValue)")
+                        if lastToken == "\\n" {
+                            completion("[After '\(lastToken)' in \(rowCount) row] \(failureValue)")
+                        } else {                        
+                            completion("[After '\(lastToken)' in \(rowCount+1) row] \(failureValue)")
+                        }
                         return
                     }
                     if token == "\n" {
                         rowCount += 1
+                        lastToken = "\\n"
+                    } else {
+                        lastToken = token
                     }
-                    lastToken = token
                 }
                 
                 completion(failureValue)

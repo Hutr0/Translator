@@ -204,6 +204,7 @@ class Parser {
         var values: [Double] = []
         var operations: [String] = []
         var declared = false
+        var currentDeclaredVariables: [DeclaredVariables] = []
         
         for token in tokens {
             switch token.type {
@@ -234,6 +235,7 @@ class Parser {
                         }
                         
                         values.append(declaredVariable.value)
+                        currentDeclaredVariables.append(declaredVariable)
                         declared = true
                     }
                 }
@@ -250,9 +252,39 @@ class Parser {
         guard let result = result else {
             return Result(failureValue: ErrorDescription.calculate, failurePlace: -1)
         }
-
-        self.declaredVariables.append(DeclaredVariables(name: name, value: result))
-        let variable = "\(name) = \(result)"
+        
+        let dVariable = DeclaredVariables(name: name, value: result)
+        if !currentDeclaredVariables.isEmpty {
+            var notCurrent = true
+            var num = 0
+            for currentDeclaredVariable in currentDeclaredVariables {
+                if currentDeclaredVariable.name == dVariable.name {
+                    notCurrent = false
+                    break
+                }
+                num += 1
+            }
+            if notCurrent {
+                self.declaredVariables.append(dVariable)
+            } else {
+                self.declaredVariables[num].value = result
+            }
+        } else {
+            self.declaredVariables.append(dVariable)
+        }
+        
+        let variable: String
+        if result.truncatingRemainder(dividingBy: 1) == 0 {
+            variable = "\(name) = \(Int(result))"
+        } else {
+            let nf = NumberFormatter()
+            nf.numberStyle = .decimal
+            nf.maximumFractionDigits = 3
+            
+            let number = NSNumber(value: result)
+            variable = "\(name) = \(nf.string(from: number) ?? String(result))"
+        }
+        
         print(variable)
         return Result(successValue: [variable])
     }
