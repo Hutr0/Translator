@@ -13,10 +13,12 @@ class Parser {
     func parse(stringTokens: [String]) -> Result {
         var lastToken = Token(type: nil, value: "")
         var lastContentToken = Token(type: nil, value: "")
+        var endOfLine: Bool = false
         var firstNumbersCounter = 0
         var secondWordsCounter = 0
         var tokensOfVar: [Token] = []
         var result: [String] = []
+        var elementsOFZveno: [Token] = []
         
         guard let tokens = getTokens(stringTokens: stringTokens) else {
             return Result(failureValue: ErrorDescription.tooMuchBeginOrEnd, failurePlace: -1)
@@ -48,6 +50,7 @@ class Parser {
                 }
                 
                 lastContentToken = Token(type: nil, value: "")
+                elementsOFZveno = []
                 lastToken = token
                 firstNumbersCounter = 0
                 secondWordsCounter = 0
@@ -55,19 +58,23 @@ class Parser {
             }
             
             if lastToken.type == .zveno {
-                if lastToken.value == "First" && token.type == .endOfLine && lastContentToken.type == .comma {
-                    return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenCount)
-                }
-                
                 if lastToken.value == "First" {
-                    if token.type == .number {
+                    if token.type == .endOfLine && lastContentToken.type == .comma {
+                        return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenCount)
+                    } else if endOfLine && token.type == .number && !elementsOFZveno.isEmpty {
+                        return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenCount)
+                    } else if token.type == .number {
+                        elementsOFZveno.append(token)
                         lastContentToken = token
+                        endOfLine = false
                         firstNumbersCounter += 1
                         continue
                     } else if lastContentToken.type == .number && token.type == .comma {
                         lastContentToken = token
+                        endOfLine = false
                         continue
                     } else if token.type == .endOfLine {
+                        endOfLine = true
                         continue
                     } else if token.type == .word {
                         if firstNumbersCounter < 1 {
@@ -75,6 +82,7 @@ class Parser {
                         }
                         lastToken = token
                         lastContentToken = token
+                        endOfLine = false
                         continue
                     } else {
                         return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenCount)
@@ -158,6 +166,8 @@ class Parser {
                 } else if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
                     print("Complete")
                     return Result(successValue: result)
+                } else if token.type == .endOfLine {
+                    continue
                 } else {
                     return Result(failureValue: ErrorDescription.variableInStructure, failurePlace: tokenCount)
                 }

@@ -22,6 +22,8 @@ struct ErrorDescription {
     static let zvenoInStructure = "Error: Program structure was broken (Звено)."
     static let zvenoComma = "Error: Number is expected after comma in Звено 'First'."
     static let zvenoNumber = "Error: Number is expected in Звено 'First'."
+    static let zvenoTooMuchNumbers = "Error: Elements of Звено 'First' must be written in one line."
+    static let zvenoTooMuchWords = "Error: Elements of Звено 'Second' must be written in one line."
     static let zvenoWord = "Error: Word is expected in Звено 'Second'."
     static let zvenoElememtMissedInStructure = "Error: Program structure was broken. Expected 'First' or 'Second' in Звено."
     static let minus = "Error: Too many minuses."
