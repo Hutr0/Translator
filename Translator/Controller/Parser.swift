@@ -9,16 +9,23 @@ import Foundation
 
 class Parser {
     private var declaredVariables: [DeclaredVariables] = []
-
+    
+    /// This method is called of MainController for start token parsing
+    /// - Parameter stringTokens: Array of string tokens from LexicalAnalyzer for parsing
+    /// - Returns: All variables
     func parse(stringTokens: [String]) -> Result {
-        var lastToken = Token(type: nil, value: "")
-        var lastContentToken = Token(type: nil, value: "")
-        var endOfLine: Bool = false
-        var firstNumbersCounter = 0
-        var secondWordsCounter = 0
-        var tokensOfVar: [Token] = []
-        var result: [String] = []
-        var elementsOFZveno: [Token] = []
+        var lastToken = Token(type: nil, value: "")             // Last token (Begin, Zveno, Variable, End)
+        var lastContentToken = Token(type: nil, value: "")      // Last content of token (word, number, operation, ...)
+        
+        var lineWasEnded: Bool = false                          // Line was ended
+        var elementsOFZveno: [Token] = []                       // Elements of Zveno
+        
+        var firstNumbersCounter = 0                             // Counter for 'First' numbers
+        var secondWordsCounter = 0                              // Counter for 'Second' words
+        
+        var tokensOfVar: [Token] = []                           // Variables of current token
+
+        var result: [String] = []                               // Result of variables calculation for current method
         
         guard let tokens = getTokens(stringTokens: stringTokens) else {
             return Result(failureValue: ErrorDescription.tooMuchBeginOrEnd, failurePlace: -1)
@@ -59,22 +66,23 @@ class Parser {
             
             if lastToken.type == .zveno {
                 if lastToken.value == "First" {
+                    
                     if token.type == .endOfLine && lastContentToken.type == .comma {
                         return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenCount)
-                    } else if endOfLine && token.type == .number && !elementsOFZveno.isEmpty {
+                    } else if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
                         return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenCount)
                     } else if token.type == .number {
                         elementsOFZveno.append(token)
                         lastContentToken = token
-                        endOfLine = false
+                        lineWasEnded = false
                         firstNumbersCounter += 1
                         continue
                     } else if lastContentToken.type == .number && token.type == .comma {
                         lastContentToken = token
-                        endOfLine = false
+                        lineWasEnded = false
                         continue
                     } else if token.type == .endOfLine {
-                        endOfLine = true
+                        lineWasEnded = true
                         continue
                     } else if token.type == .word {
                         if firstNumbersCounter < 1 {
@@ -82,12 +90,14 @@ class Parser {
                         }
                         lastToken = token
                         lastContentToken = token
-                        endOfLine = false
+                        lineWasEnded = false
                         continue
                     } else {
                         return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenCount)
                     }
+                    
                 } else if lastToken.value == "Second" {
+                    
                     if token.type == .word {
                         lastContentToken = token
                         secondWordsCounter += 1
@@ -106,6 +116,7 @@ class Parser {
                     } else {
                         return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenCount)
                     }
+                    
                 } else {
                     return Result(failureValue: ErrorDescription.zvenoElememtMissedInStructure, failurePlace: tokenCount)
                 }
@@ -178,8 +189,8 @@ class Parser {
     }
     
     /// Get tokens from string of tokens and return it
-    /// - Parameter stringTokens: String of tokens
-    /// - Returns: Tokens array
+    /// - Parameter stringTokens: Array of string tokens
+    /// - Returns: Array of tokens
     private func getTokens(stringTokens: [String]) -> [Token]? {
         var startIsSet = false
         var endIsSet = false
@@ -210,11 +221,17 @@ class Parser {
         return tokens
     }
     
+    /// Get result string of variable and calculated result
+    /// - Parameters:
+    ///   - name: Variable name
+    ///   - tokens: Tokens for calculate of variable (numbers, operatons, ...)
+    /// - Returns: String of variable and calculated result
     private func getVarString(name: String, tokens: [Token]) -> Result {
         var values: [Double] = []
         var operations: [String] = []
-        var declared = false
+        
         var currentDeclaredVariables: [DeclaredVariables] = []
+        var declared = false
         
         for token in tokens {
             switch token.type {
@@ -302,6 +319,11 @@ class Parser {
         return Result(successValue: [variable])
     }
     
+    /// Calcualte variable
+    /// - Parameters:
+    ///   - values: Digits
+    ///   - operations: Operations
+    /// - Returns: Result of calculation for variable
     private func calculate(values: [Double], operations: [String]) -> Double? {
         var values = values
         var operations = operations
