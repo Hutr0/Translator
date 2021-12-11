@@ -257,17 +257,20 @@ class Parser {
         if !currentDeclaredVariables.isEmpty {
             var notCurrent = true
             var num = 0
-            for currentDeclaredVariable in currentDeclaredVariables {
-                if currentDeclaredVariable.name == dVariable.name {
-                    notCurrent = false
-                    break
+            var lastNum = 0
+            for declaredVariable in declaredVariables {
+                for currentDeclaredVariable in currentDeclaredVariables {
+                    if declaredVariable.name == dVariable.name && currentDeclaredVariable.name == dVariable.name {
+                        notCurrent = false
+                        lastNum = num
+                    }
                 }
                 num += 1
             }
             if notCurrent {
                 self.declaredVariables.append(dVariable)
             } else {
-                self.declaredVariables[num].value = result
+                self.declaredVariables[lastNum].value = result
             }
         } else {
             self.declaredVariables.append(dVariable)
