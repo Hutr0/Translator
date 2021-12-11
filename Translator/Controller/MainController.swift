@@ -32,17 +32,23 @@ class MainController {
     
     let testProgram = """
     Begin
+    
     First
-    0,2,4,3
-    First
-    56,6,1
+    1, 2, 34, 5
+    
     Second
-    d7da uh312d d2
-    param1 = 1 + 2
-    ar13 = 12 * 2
-    arg = 14^2
-    p2 = param1 / 2
-    p = ctg p2
+    a b
+    
+    Second
+    tr45 t3
+    
+    a = 1
+    a = a * 10^2
+    b = 12 + 3 - ctg 2 * 10 ^ 2
+    b = b - 10
+    c = ctg 2
+    c = b / c
+    
     End
     """
     
