@@ -99,12 +99,10 @@ class MainController {
                         let failurePlace = parserResult.failurePlace
                 else { return }
                 
-                var tokenCount = 0
                 var rowCount = 0
                 var lastToken: String = "<ERROR>"
-                for token in tokens {
-                    tokenCount += 1
-                    if tokenCount == failurePlace {
+                for (place, token) in tokens.enumerated() {
+                    if place == failurePlace {
                         if lastToken == "\\n" {
                             completion("[After '\(lastToken)' in \(rowCount) row] \(failureValue)")
                         } else {                        
@@ -127,11 +125,9 @@ class MainController {
                     let failurePlace = result.failurePlace
             else { return }
             
-            var i = 0
             var rowCount = 0
-            for symbol in program {
-                i += 1
-                if i == failurePlace {
+            for (place, symbol) in program.enumerated() {
+                if place == failurePlace {
                     completion("[\(rowCount+1) row]: \(failureValue)")
                     return
                 }
