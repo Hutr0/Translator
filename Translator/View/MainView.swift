@@ -9,10 +9,19 @@ import Cocoa
 
 class MainView: NSViewController {
 
-    @IBOutlet var languageFormat: NSTextView!
+    @IBOutlet var languageFormat: NSTextView!{
+        didSet {
+            languageFormat.string = controller.getLanguage()
+        }
+    }
     @IBOutlet var output: NSTextView!
     
-    @IBOutlet var rowsOfProgram: NSTextView!
+    @IBOutlet var rowsOfProgram: NSTextView! {
+        didSet {
+            rowsOfProgram.alignment = .right
+            rowsOfProgram.string = "1"
+        }
+    }
     @IBOutlet weak var rowsScrollView: NSScrollView!
     
     @IBOutlet var program: NSTextView!
@@ -25,11 +34,6 @@ class MainView: NSViewController {
         
         program.delegate = self
         
-        languageFormat.string = controller.language
-        
-        rowsOfProgram.alignment = .right
-        rowsOfProgram.string = "1"
-        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(boundsDidChangeNotification),
                                                name: NSView.boundsDidChangeNotification,
@@ -37,7 +41,7 @@ class MainView: NSViewController {
     }
     
     @IBAction func testProgramButton(_ sender: NSButton) {
-        program.string = controller.testProgram
+        program.string = controller.getTestProgram()
         setCorrectlyRowsCount()
     }
     

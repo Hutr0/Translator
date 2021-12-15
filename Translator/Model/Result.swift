@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Result {
+struct Result {
     let type: ResultType
     let successValue: [String]?
     let failureValue: String?

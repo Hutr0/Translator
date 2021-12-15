@@ -12,12 +12,20 @@
 		E00512A8275930B0005AC832 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E00512A7275930B0005AC832 /* Assets.xcassets */; };
 		E00512AB275930B0005AC832 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E00512A9275930B0005AC832 /* Main.storyboard */; };
 		E0AB13D8275E127F00CD7147 /* ErrorDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AB13D7275E127F00CD7147 /* ErrorDescription.swift */; };
-		E0AB13DA275E3CBC00CD7147 /* DeclaredVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AB13D9275E3CBC00CD7147 /* DeclaredVariables.swift */; };
+		E0AB13DA275E3CBC00CD7147 /* DeclaredVariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AB13D9275E3CBC00CD7147 /* DeclaredVariable.swift */; };
 		E0AB13DF275E8DC200CD7147 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AB13DE275E8DC200CD7147 /* Result.swift */; };
 		E0BC4E3D275972F200DC5345 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E3C275972F200DC5345 /* MainController.swift */; };
 		E0BC4E45275B8E4500DC5345 /* LexicalAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */; };
 		E0BC4E47275BB4F400DC5345 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E46275BB4F400DC5345 /* Token.swift */; };
 		E0BC4E49275BC7C600DC5345 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0BC4E48275BC7C600DC5345 /* Parser.swift */; };
+		E0F7777E27694AD500300DAF /* MainData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F7777D27694AD500300DAF /* MainData.swift */; };
+		E0F7778027694BE900300DAF /* RowsEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F7777F27694BE900300DAF /* RowsEditor.swift */; };
+		E0F7778427694F8300300DAF /* ProgramExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F7778327694F8300300DAF /* ProgramExecutor.swift */; };
+		E0F77786276959F700300DAF /* ParserWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F77785276959F700300DAF /* ParserWorker.swift */; };
+		E0F7778A27695B1A00300DAF /* LexicalWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F7778927695B1A00300DAF /* LexicalWorker.swift */; };
+		E0F7778E27695D6900300DAF /* Symbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F7778D27695D6900300DAF /* Symbol.swift */; };
+		E0F7779127695F6F00300DAF /* StringChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F7779027695F6F00300DAF /* StringChecker.swift */; };
+		E0F777932769622000300DAF /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F777922769622000300DAF /* Calculator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,12 +36,20 @@
 		E00512AA275930B0005AC832 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E00512AC275930B0005AC832 /* Translator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Translator.entitlements; sourceTree = "<group>"; };
 		E0AB13D7275E127F00CD7147 /* ErrorDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDescription.swift; sourceTree = "<group>"; };
-		E0AB13D9275E3CBC00CD7147 /* DeclaredVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclaredVariables.swift; sourceTree = "<group>"; };
+		E0AB13D9275E3CBC00CD7147 /* DeclaredVariable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclaredVariable.swift; sourceTree = "<group>"; };
 		E0AB13DE275E8DC200CD7147 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		E0BC4E3C275972F200DC5345 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexicalAnalyzer.swift; sourceTree = "<group>"; };
 		E0BC4E46275BB4F400DC5345 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		E0BC4E48275BC7C600DC5345 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		E0F7777D27694AD500300DAF /* MainData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainData.swift; sourceTree = "<group>"; };
+		E0F7777F27694BE900300DAF /* RowsEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowsEditor.swift; sourceTree = "<group>"; };
+		E0F7778327694F8300300DAF /* ProgramExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramExecutor.swift; sourceTree = "<group>"; };
+		E0F77785276959F700300DAF /* ParserWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserWorker.swift; sourceTree = "<group>"; };
+		E0F7778927695B1A00300DAF /* LexicalWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexicalWorker.swift; sourceTree = "<group>"; };
+		E0F7778D27695D6900300DAF /* Symbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbol.swift; sourceTree = "<group>"; };
+		E0F7779027695F6F00300DAF /* StringChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringChecker.swift; sourceTree = "<group>"; };
+		E0F777922769622000300DAF /* Calculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,9 +83,9 @@
 			isa = PBXGroup;
 			children = (
 				E00512A3275930AE005AC832 /* AppDelegate.swift */,
-				E0AB13DB275E3CE500CD7147 /* Model */,
-				E0AB13DC275E3CF200CD7147 /* Controller */,
 				E0AB13DD275E3D0100CD7147 /* View */,
+				E0F777942769772F00300DAF /* ViewModel */,
+				E0AB13DB275E3CE500CD7147 /* Model */,
 				E00512A7275930B0005AC832 /* Assets.xcassets */,
 				E00512A9275930B0005AC832 /* Main.storyboard */,
 				E00512AC275930B0005AC832 /* Translator.entitlements */,
@@ -80,10 +96,11 @@
 		E0AB13DB275E3CE500CD7147 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				E0BC4E46275BB4F400DC5345 /* Token.swift */,
-				E0AB13D9275E3CBC00CD7147 /* DeclaredVariables.swift */,
-				E0AB13D7275E127F00CD7147 /* ErrorDescription.swift */,
 				E0AB13DE275E8DC200CD7147 /* Result.swift */,
+				E0AB13D7275E127F00CD7147 /* ErrorDescription.swift */,
+				E0F7778227694F2700300DAF /* Main */,
+				E0F7778C27695D1700300DAF /* Lexical */,
+				E0F7778B27695BDA00300DAF /* Parser */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -92,8 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				E0BC4E3C275972F200DC5345 /* MainController.swift */,
-				E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */,
-				E0BC4E48275BC7C600DC5345 /* Parser.swift */,
+				E0F7778127694ECE00300DAF /* Helper */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -104,6 +120,78 @@
 				E00512A5275930AE005AC832 /* MainView.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		E0F7778127694ECE00300DAF /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				E0F7777F27694BE900300DAF /* RowsEditor.swift */,
+				E0F7778327694F8300300DAF /* ProgramExecutor.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		E0F7778227694F2700300DAF /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				E0F7777D27694AD500300DAF /* MainData.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		E0F7778727695A4800300DAF /* Parser */ = {
+			isa = PBXGroup;
+			children = (
+				E0F77785276959F700300DAF /* ParserWorker.swift */,
+				E0BC4E48275BC7C600DC5345 /* Parser.swift */,
+				E0F7778F27695EA200300DAF /* Helper */,
+			);
+			path = Parser;
+			sourceTree = "<group>";
+		};
+		E0F7778827695B0000300DAF /* Lexical */ = {
+			isa = PBXGroup;
+			children = (
+				E0F7778927695B1A00300DAF /* LexicalWorker.swift */,
+				E0BC4E44275B8E4500DC5345 /* LexicalAnalyzer.swift */,
+			);
+			path = Lexical;
+			sourceTree = "<group>";
+		};
+		E0F7778B27695BDA00300DAF /* Parser */ = {
+			isa = PBXGroup;
+			children = (
+				E0BC4E46275BB4F400DC5345 /* Token.swift */,
+				E0AB13D9275E3CBC00CD7147 /* DeclaredVariable.swift */,
+			);
+			path = Parser;
+			sourceTree = "<group>";
+		};
+		E0F7778C27695D1700300DAF /* Lexical */ = {
+			isa = PBXGroup;
+			children = (
+				E0F7778D27695D6900300DAF /* Symbol.swift */,
+			);
+			path = Lexical;
+			sourceTree = "<group>";
+		};
+		E0F7778F27695EA200300DAF /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				E0F7779027695F6F00300DAF /* StringChecker.swift */,
+				E0F777922769622000300DAF /* Calculator.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		E0F777942769772F00300DAF /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				E0AB13DC275E3CF200CD7147 /* Controller */,
+				E0F7778827695B0000300DAF /* Lexical */,
+				E0F7778727695A4800300DAF /* Parser */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -178,13 +266,21 @@
 			files = (
 				E0AB13DF275E8DC200CD7147 /* Result.swift in Sources */,
 				E0BC4E45275B8E4500DC5345 /* LexicalAnalyzer.swift in Sources */,
+				E0F7778A27695B1A00300DAF /* LexicalWorker.swift in Sources */,
+				E0F77786276959F700300DAF /* ParserWorker.swift in Sources */,
 				E0BC4E47275BB4F400DC5345 /* Token.swift in Sources */,
+				E0F7778427694F8300300DAF /* ProgramExecutor.swift in Sources */,
+				E0F7777E27694AD500300DAF /* MainData.swift in Sources */,
+				E0F777932769622000300DAF /* Calculator.swift in Sources */,
+				E0F7778027694BE900300DAF /* RowsEditor.swift in Sources */,
 				E0AB13D8275E127F00CD7147 /* ErrorDescription.swift in Sources */,
 				E0BC4E49275BC7C600DC5345 /* Parser.swift in Sources */,
+				E0F7779127695F6F00300DAF /* StringChecker.swift in Sources */,
+				E0F7778E27695D6900300DAF /* Symbol.swift in Sources */,
 				E00512A6275930AE005AC832 /* MainView.swift in Sources */,
 				E0BC4E3D275972F200DC5345 /* MainController.swift in Sources */,
 				E00512A4275930AE005AC832 /* AppDelegate.swift in Sources */,
-				E0AB13DA275E3CBC00CD7147 /* DeclaredVariables.swift in Sources */,
+				E0AB13DA275E3CBC00CD7147 /* DeclaredVariable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

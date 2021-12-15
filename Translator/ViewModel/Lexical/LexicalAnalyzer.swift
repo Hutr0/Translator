@@ -16,7 +16,7 @@ class LexicalAnalyzer {
         var symbolCount = 0
         for char in inputProgram {
             symbolCount += 1
-            let symbolClass = getSymbolClass(symbol: char)
+            let symbolClass = Symbol.getSymbolClass(symbol: char)
             
             guard let symbolClass = symbolClass else {
                 return Result(failureValue: ErrorDescription.wrongSymbol(symbol: char), failurePlace: symbolCount)
@@ -44,34 +44,5 @@ class LexicalAnalyzer {
         
         tokens.append(temp)
         return Result(successValue: tokens)
-    }
-    
-    private static func getSymbolClass(symbol: Character) -> SymbolClass? {
-        switch symbol {
-        case "a"..."z", "A"..."Z":
-            return .value
-        case "0"..."7":
-            return .value
-        case "=":
-            return .modifier
-        case "+", "-", "*", "/":
-            return .modifier
-        case "^":
-            return .modifier
-        case ",":
-            return .modifier
-        case "\n":
-            return .modifier
-        case " ":
-            return .separator
-        default:
-            return nil
-        }
-    }
-    
-    private enum SymbolClass {
-        case value
-        case separator
-        case modifier
     }
 }

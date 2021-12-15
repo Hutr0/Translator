@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DeclaredVariables {
+class DeclaredVariable {
     let name: String
     var value: Double
     

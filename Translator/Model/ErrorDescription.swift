@@ -31,9 +31,12 @@ struct ErrorDescription {
     static let variableInStructure = "Error: Program structure was broken (variables)"
     static let incorrectTermination = "Error: The program was terminated incorrectly."
     static let calculate = "Error: Cannot calculate the result."
+    static let failureValueOrPlace = "Error: Failure value or failure place is nil."
+    static let getParserFailure = "Error: getParserFailure function returned an incorrect result."
+    static let lexicalSuccessValue = "Error: Lexical analyzer success value is nil."
     
     static func varNotDeclared(name: String) -> String {
-        return "Error: \(name) was not declared."
+        return "Error: '\(name)' was not declared."
     }
     
     static func wrongSymbol(symbol: Character) -> String {
