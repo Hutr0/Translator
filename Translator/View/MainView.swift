@@ -73,15 +73,11 @@ extension MainView: NSTextViewDelegate {
             let last = self.rowsOfProgram.string.components(separatedBy: "\n").last
             
             if rowsCount < programRowsCount {
-                controller.addRows(last: last) { [weak self] num in
-                    guard let self = self else { return }
-                    
+                controller.addRows(last: last) { num in
                     self.rowsOfProgram.string += "\n\(num)"
                 }
             } else if rowsCount > programRowsCount {
-                controller.deleteRows(last: last) { [weak self] in
-                    guard let self = self else { return }
-                    
+                controller.deleteRows(last: last) {
                     self.rowsOfProgram.string.removeLast()
                 }
             } else {
