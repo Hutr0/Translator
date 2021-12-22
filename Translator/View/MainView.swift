@@ -27,6 +27,8 @@ class MainView: NSViewController {
     @IBOutlet var program: NSTextView!
     @IBOutlet weak var programScrollView: NSScrollView!
     
+    @IBOutlet weak var autoCheck: NSButton!
+    
     let controller = MainController()
     
     override func viewDidLoad() {
@@ -63,7 +65,14 @@ class MainView: NSViewController {
 extension MainView: NSTextViewDelegate {
     
     func textDidChange(_ notification: Notification) {
-       setCorrectlyRowsCount()
+        setCorrectlyRowsCount()
+        if autoCheck.state.rawValue == 1 {
+            controller.execute(program: program.string) { [weak self] result in
+                guard let self = self else { return }
+                
+                self.output.string = result
+            }
+        }
     }
     
     private func setCorrectlyRowsCount() {
