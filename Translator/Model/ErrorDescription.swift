@@ -15,35 +15,35 @@ struct ErrorDescription {
 //    static let convertToDouble = "Error: Cannot be converted to Double."
 //    static let unsuccessfulParsing = "Error: Unsuccessful parsing."
     
-    static let lastRow = "Error: Invalid last row element."
-    static let tooMuchBeginOrEnd = "Error: So many 'Begin' or 'End' in the program structure."
-    static let missedBeginOrEnd = "Error: Missing 'Begin' or 'End' in the program structure."
-    static let missedZveno = "Error: Missing Звено in the program structure."
-    static let zvenoInStructure = "Error: Program structure was broken (Звено)."
-    static let zvenoComma = "Error: Number is expected after comma in Звено 'First'."
-    static let zvenoNumber = "Error: Number is expected in Звено 'First'."
-    static let zvenoTooMuchNumbers = "Error: Elements of Звено 'First' must be written in one line."
-    static let zvenoTooMuchWords = "Error: Elements of Звено 'Second' must be written in one line."
-    static let zvenoWord = "Error: Word is expected in Звено 'Second'."
-    static let zvenoElememtMissedInStructure = "Error: Program structure was broken. Expected 'First' or 'Second' in Звено."
-    static let minus = "Error: Too many minuses."
-    static let getVarString = "Error: Cannot get string of variable."
-    static let variableInStructure = "Error: Program structure was broken (variables)"
-    static let incorrectTermination = "Error: The program was terminated incorrectly."
-    static let calculate = "Error: Cannot calculate the result."
-    static let failureValueOrPlace = "Error: Failure value or failure place is nil."
-    static let getParserFailure = "Error: getParserFailure function returned an incorrect result."
-    static let lexicalSuccessValue = "Error: Lexical analyzer success value is nil."
+    static let lastRow = "Ошибка: Неверный последний элемент строки."
+    static let tooMuchBeginOrEnd = "Ошибка: Слишком много 'Begin' или 'End' в структуре программы."
+    static let missedBeginOrEnd = "Ошибка: Отсутствует 'Begin' или 'End' в структуре программы."
+    static let missedZveno = "Ошибка: Отсутствует Звено в структуре программы."
+    static let zvenoInStructure = "Ошибка: Нарушена структура программы (Звено)."
+    static let zvenoComma = "Ошибка: Ожидалось число после запятой в Звено 'First'."
+    static let zvenoNumber = "Ошибка: Ожидалось число в Звено 'First'."
+    static let zvenoTooMuchNumbers = "Ошибка: Элементы Звено 'First' должны быть написаны в одну строку."
+    static let zvenoTooMuchWords = "Ошибка: Элементы Звено 'Second' должны быть написаны в одну строку."
+    static let zvenoWord = "Ошибка: Ожидалась Переменная в Звено 'Second'."
+    static let zvenoElememtMissedInStructure = "Ошибка: Нарушена структура программы. Ожидалось 'First' или 'Second' в Звено."
+    static let minus = "Ошибка: Слишком много минусов."
+    static let getVarString = "Ошибка: Невозможно получить строку переменной."
+    static let variableInStructure = "Ошибка: Нарушена структура программы (Переменная)"
+    static let incorrectTermination = "Ошибка: Программы была завершена некорректно."
+    static let calculate = "Ошибка: Невозможно посчитать результат."
+    static let failureValueOrPlace = "Ошибка: Значение 'failureValue' или 'failurePlace' равно nil. Невозможно вернуть ошибку."
+    static let getParserFailure = "Ошибка: Функиця 'getParserFailure' вернула некорректный результат."
+    static let lexicalSuccessValue = "Ошибка: 'successValue' лексического анализатора равно nil. Невозможно вернуть результат."
     
     static func varNotDeclared(name: String) -> String {
-        return "Error: '\(name)' was not declared."
+        return "Ошибка: '\(name)' переменная не объявлена."
     }
     
     static func wrongSymbol(symbol: Character) -> String {
-        return "Error: LexicalAnalizer cannot analyze the program. Wrong symbol: '\(symbol)'."
+        return "Ошибка: Лексический анализатор не смог проанализировать программу. Неверный символ: '\(symbol)'."
     }
     
     static func convertToDouble(value: String) -> String {
-        return "Error: '\(value)' cannot be converted to Double."
+        return "Ошибка: '\(value)' Невозможно преобразовать в Double."
     }
 }

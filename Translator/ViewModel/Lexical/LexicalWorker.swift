@@ -16,7 +16,7 @@ struct LexicalWorker {
         var rowCount = 0
         for (i, symbol) in program.enumerated() {
             if i == place {
-                return "[\(rowCount+1) row]: \(value)"
+                return "[Строк №\(rowCount+1)]: \(value)"
             }
             if symbol == "\n" {
                 rowCount += 1

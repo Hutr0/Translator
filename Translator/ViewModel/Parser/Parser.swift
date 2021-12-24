@@ -25,7 +25,7 @@ class Parser {
         var secondWordsCounter = 0                              // Counter for 'Second' words
         
         var tokensOfVar: [Token] = []                           // Variables of current token
-
+        
         var result: [String] = []                               // Result of variables calculation for current method
         
         guard let tokens = StringChecker.getTokens(stringTokens: stringTokens) else {
@@ -176,8 +176,12 @@ class Parser {
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
+                } else if lastContentToken.type == .function && token.type == .function {
+                    tokensOfVar.append(lastContentToken)
+                    lastContentToken = token
+                    continue
                 } else if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
-                    print("Complete")
+                    print("Выполнено")
                     return Result(successValue: result)
                 } else if token.type == .endOfLine {
                     continue

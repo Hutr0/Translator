@@ -34,13 +34,13 @@ struct ParserWorker {
     
     static func getParserFailure(of value: String, in place: Int, tokens: [String]) -> String {
         var rowCount = 0
-        var lastToken: String = "<ERROR>"
+        var lastToken: String = "<ОШИБКА>"
         for (i, token) in tokens.enumerated() {
             if i == place {
                 if lastToken == "\\n" {
-                    return "['\(lastToken)' in \(rowCount) row] \(value)"
+                    return "['\(lastToken)' в строке №\(rowCount)] \(value)"
                 } else {
-                    return "['\(lastToken)' in \(rowCount+1) row] \(value)"
+                    return "['\(lastToken)' в строке №\(rowCount+1)] \(value)"
                 }
             }
             if token == "\n" {
