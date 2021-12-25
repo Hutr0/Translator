@@ -47,3 +47,4 @@ struct ErrorDescription {
         return "Ошибка: '\(value)' Невозможно преобразовать в Double."
     }
 }
+
