@@ -22,14 +22,17 @@ struct ErrorDescription {
     static let isNotStart = "Ошибка: 'Begin' должен быть первым элементом в программе."
     static let isNotEnd = "Ошибка: 'End' должен быть последним элементом в программе."
     
-    static let missedZveno = "Ошибка: Отсутствует Звено в структуре программы."
+    static let missedZveno = "Ошибка: Ожидалось Звено в структуре программы."
     static let zvenoInStructure = "Ошибка: Нарушена структура программы (Звено)."
+    static let zvenoElememtMissedInStructure = "Ошибка: Нарушена структура программы. Ожидалось 'First' или 'Second' в Звено."
+    
     static let zvenoComma = "Ошибка: Ожидалось число после запятой в Звено 'First'."
     static let zvenoNumber = "Ошибка: Ожидалось число в Звено 'First'."
     static let zvenoTooMuchNumbers = "Ошибка: Элементы Звено 'First' должны быть написаны в одну строку."
+    
     static let zvenoTooMuchWords = "Ошибка: Элементы Звено 'Second' должны быть написаны в одну строку."
     static let zvenoWord = "Ошибка: Ожидалась Переменная в Звено 'Second'."
-    static let zvenoElememtMissedInStructure = "Ошибка: Нарушена структура программы. Ожидалось 'First' или 'Second' в Звено."
+    
     static let minus = "Ошибка: Слишком много минусов."
     static let getVarString = "Ошибка: Невозможно получить строку переменной."
     static let variableInStructure = "Ошибка: Нарушена структура программы (Переменная)"

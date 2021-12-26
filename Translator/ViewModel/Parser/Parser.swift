@@ -57,25 +57,22 @@ class Parser {
             }
         }
         
-        var tokenCount = 0
-        for token in tokens {
-            tokenCount += 1
+        for (tokenNum, token) in tokens.enumerated() {
             if token.type == .startOfProgram {
                 lastToken = token
                 continue
             }
             
-            if lastToken.type == .startOfProgram && token.type == .zveno {
+            if lastToken.type == .startOfProgram && token.type == .endOfLine {
+                continue
+            } else  if lastToken.type == .startOfProgram && token.type == .zveno {
                 lastToken = token
                 continue
-            } else if lastToken.type == .startOfProgram && token.type == .endOfLine {
-                continue
             } else if lastToken.type == .startOfProgram && token.type != .zveno && token.type != .endOfLine {
-                return Result(failureValue: ErrorDescription.missedZveno, failurePlace: tokenCount)
+                return Result(failureValue: ErrorDescription.missedZveno, failurePlace: tokenNum)
             } else if lastToken.type == .zveno && token.type == .zveno {
-                
                 if lastContentToken.type == nil {
-                    return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenCount)
+                    return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenNum)
                 }
                 
                 lastContentToken = Token(type: nil, value: "")
@@ -90,9 +87,9 @@ class Parser {
                 if lastToken.value == "First" {
                     
                     if token.type == .endOfLine && lastContentToken.type == .comma {
-                        return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenCount)
+                        return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenNum)
                     } else if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
-                        return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenCount)
+                        return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenNum)
                     } else if token.type == .number {
                         elementsOFZveno.append(token)
                         lastContentToken = token
@@ -108,14 +105,14 @@ class Parser {
                         continue
                     } else if token.type == .word {
                         if firstNumbersCounter < 1 {
-                            return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenCount)
+                            return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
                         }
                         lastToken = token
                         lastContentToken = token
                         lineWasEnded = false
                         continue
                     } else {
-                        return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenCount)
+                        return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
                     }
                     
                 } else if lastToken.value == "Second" {
@@ -125,22 +122,22 @@ class Parser {
                         secondWordsCounter += 1
                         continue
                     } else if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
-                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenCount)
+                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
                     } else if token.type == .endOfLine {
                         continue
                     } else if token.type == .equal {
                         if secondWordsCounter < 2 {
-                            return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenCount)
+                            return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
                         }
                         lastToken = Token(type: .word, value: lastContentToken.value)
                         lastContentToken = token
                         continue
                     } else {
-                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenCount)
+                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
                     }
                     
                 } else {
-                    return Result(failureValue: ErrorDescription.zvenoElememtMissedInStructure, failurePlace: tokenCount)
+                    return Result(failureValue: ErrorDescription.zvenoElememtMissedInStructure, failurePlace: tokenNum)
                 }
             }
             
@@ -151,7 +148,7 @@ class Parser {
                     lastContentToken = token
                     continue
                 } else if lastContentToken.value == "-" && token.value == "-" {
-                    return Result(failureValue: ErrorDescription.minus, failurePlace: tokenCount)
+                    return Result(failureValue: ErrorDescription.minus, failurePlace: tokenNum)
                 } else if (lastContentToken.type == .equal || lastContentToken.type == .operation || lastContentToken.type == .function) && token.value == "-" {
                     lastContentToken = token
                     continue
@@ -176,7 +173,7 @@ class Parser {
                         guard let strings = varStringResult.successValue,
                               let str = strings.first
                         else {
-                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenCount)
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum)
                         }
                         result.append(str)
                         tokensOfVar = []
@@ -184,7 +181,7 @@ class Parser {
                         continue
                     case .failure:
                         let failureValue = varStringResult.failureValue
-                        return Result(failureValue: failureValue ?? "Unknown error...", failurePlace: tokenCount)
+                        return Result(failureValue: failureValue ?? "Unknown error...", failurePlace: tokenNum)
                     }
                 } else if lastContentToken.type == .endOfLine && token.type == .word {
                     lastContentToken = token
@@ -207,7 +204,7 @@ class Parser {
                 } else if token.type == .endOfLine {
                     continue
                 } else {
-                    return Result(failureValue: ErrorDescription.variableInStructure, failurePlace: tokenCount)
+                    return Result(failureValue: ErrorDescription.variableInStructure, failurePlace: tokenNum)
                 }
                 
             }
