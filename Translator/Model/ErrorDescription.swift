@@ -17,7 +17,11 @@ struct ErrorDescription {
     
     static let lastRow = "Ошибка: Неверный последний элемент строки."
     static let tooMuchBeginOrEnd = "Ошибка: Слишком много 'Begin' или 'End' в структуре программы."
-    static let missedBeginOrEnd = "Ошибка: Отсутствует 'Begin' или 'End' в структуре программы."
+    static let missedBegin = "Ошибка: Отсутствует 'Begin' в структуре программы."
+    static let missedEnd = "Ошибка: Отсутствует 'End' в структуре программы."
+    static let isNotStart = "Ошибка: 'Begin' должен быть первым элементом в программе."
+    static let isNotEnd = "Ошибка: 'End' должен быть последним элементом в программе."
+    
     static let missedZveno = "Ошибка: Отсутствует Звено в структуре программы."
     static let zvenoInStructure = "Ошибка: Нарушена структура программы (Звено)."
     static let zvenoComma = "Ошибка: Ожидалось число после запятой в Звено 'First'."

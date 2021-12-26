@@ -41,7 +41,7 @@ struct ParserWorker {
                 if token == "\n" {
                     return "['\(lastToken)' в строке №\(rowCount)] \(value)"
                 } else {
-                    return "['\(token)' в строке №\(rowCount+1)] \(value)"
+                    return "['\(token)' в строке №\(rowCount)] \(value)"
                 }
             }
             

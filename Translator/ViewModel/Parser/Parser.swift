@@ -28,12 +28,33 @@ class Parser {
         
         var result: [String] = []                               // Result of variables calculation for current method
         
-        guard let tokens = StringChecker.getTokens(stringTokens: stringTokens) else {
+        let tokensResult = StringChecker.getTokens(stringTokens: stringTokens)
+        guard let tokens = tokensResult.0 else {
             return Result(failureValue: ErrorDescription.tooMuchBeginOrEnd, failurePlace: -1)
         }
         
-        if tokens.first?.type != .startOfProgram || tokens.last?.type != .endOfProgram {
-            return Result(failureValue: ErrorDescription.missedBeginOrEnd, failurePlace: -1)
+        if !tokensResult.1 {
+            return Result(failureValue: ErrorDescription.missedBegin, failurePlace: -1)
+        } else if !tokensResult.2 {
+            return Result(failureValue: ErrorDescription.missedEnd, failurePlace: -1)
+        } else {
+            var currentToken: Token! = nil
+            
+            for (i, token) in tokens.enumerated() {
+                if token.value != "\n" {
+                    if currentToken == nil {
+                        if token.type != .startOfProgram {
+                            return Result(failureValue: ErrorDescription.isNotStart, failurePlace: i)
+                        }
+                    } else {
+                        if currentToken.type == .endOfProgram {
+                            return Result(failureValue: ErrorDescription.isNotEnd, failurePlace: i)
+                        }
+                    }
+                    
+                    currentToken = token
+                }
+            }
         }
         
         var tokenCount = 0
