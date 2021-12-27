@@ -37,7 +37,7 @@ class MainController {
     
     //MARK: - Выполнение программы
     
-    func execute(program: String, completion: @escaping (String) -> ()) {
+    func execute(program: String, completion: @escaping (String, NSMutableAttributedString?) -> ()) {
         executor.execute(program: program, completion: completion)
     }
 }

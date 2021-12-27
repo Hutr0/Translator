@@ -12,17 +12,17 @@ struct LexicalWorker {
         return LexicalAnalyzer.tokenize(inputProgram: program)
     }
     
-    static func getLexicalFailure(of value: String, in place: Int, program: String) -> String {
+    static func getLexicalFailure(of value: String, in place: Int, program: String) -> (String, Character?) {
         var rowCount = 0
         for (i, symbol) in program.enumerated() {
             if i == place {
-                return "[Строк №\(rowCount+1)]: \(value)"
+                return ("[Строк №\(rowCount+1)]: \(value)", symbol)
             }
             if symbol == "\n" {
                 rowCount += 1
             }
         }
         
-        return "\(value)"
+        return ("\(value)", nil)
     }
 }

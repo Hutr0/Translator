@@ -27,8 +27,6 @@ class MainView: NSViewController {
     @IBOutlet var program: NSTextView!
     @IBOutlet weak var programScrollView: NSScrollView!
     
-    @IBOutlet weak var autoCheck: NSButton!
-    
     let controller = MainController()
     
     override func viewDidLoad() {
@@ -54,10 +52,25 @@ class MainView: NSViewController {
     }
     
     @IBAction func executeButtonTapped(_ sender: NSButton) {
-        controller.execute(program: program.string) { [weak self] result in
+        controller.execute(program: program.string) { [weak self] result, attributedString in
             guard let self = self else { return }
             
             self.output.string = result
+            
+//            let attributedString = NSMutableAttributedString(string: self.program.string, attributes: [.foregroundColor: NSColor.red])
+//            self.program.textStorage?.setAttributedString(attributedString)
+            
+//            for (i, str) in self.program.string.split(separator: "\n").enumerated() {
+//                print("[\(i)]: \(str)")
+//            }
+//
+//            let range = (self.program.string as NSString).range(of: "Second")
+//
+//            self.program.textStorage?.addAttribute(.foregroundColor, value: NSColor.red, range: range)
+
+            if let string = attributedString {
+                self.program.textStorage?.setAttributedString(string)
+            }
         }
     }
 }
@@ -66,13 +79,6 @@ extension MainView: NSTextViewDelegate {
     
     func textDidChange(_ notification: Notification) {
         setCorrectlyRowsCount()
-        if autoCheck.state.rawValue == 1 {
-            controller.execute(program: program.string) { [weak self] result in
-                guard let self = self else { return }
-                
-                self.output.string = result
-            }
-        }
     }
     
     private func setCorrectlyRowsCount() {
