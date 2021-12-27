@@ -35,15 +35,10 @@ struct AttributedString {
         let attributedString = NSMutableAttributedString(string:program)
         
         guard var programPlace = self.tokenize(inputProgram: program, place: place) else { return nil }
-        
-        /// При числе в центре строки нужно -1
-        /// При числе в конце строки и пробеле после него нужно -1
-        ///
             
         let stringOneRegex: NSRegularExpression?
         if StringChecker.isNumber(string: token) || StringChecker.isWord(string: token) {
             stringOneRegex = try? NSRegularExpression(pattern: "\(token)", options: [])
-//            if
         } else {
             stringOneRegex = try? NSRegularExpression(pattern: "\\\(token)", options: [])
         }
@@ -62,23 +57,18 @@ struct AttributedString {
     }
     
     private static func tokenize(inputProgram: String, place: Int) -> Int? {
-        var tokens: [String] = []
-        var temp: String = ""
+        var tokenNumber = 0
+        var temp = false
         
         for (i, char) in inputProgram.enumerated() {
-            
-            print(tokens.count)
-            
-            let symbolClass = Symbol.getSymbolClass(symbol: char)
-            
-            guard let symbolClass = symbolClass else { return nil }
+            guard let symbolClass = Symbol.getSymbolClass(symbol: char) else { return nil }
             
             if symbolClass == .separator {
-                if temp != "" {
-                    tokens.append(temp)
-                    temp = ""
+                if temp {
+                    tokenNumber += 1
+                    temp = false
                     
-                    if tokens.count == place + 1 {
+                    if tokenNumber == place + 1 {
                         return i - 1
                     }
                 }
@@ -86,30 +76,30 @@ struct AttributedString {
             }
             
             if symbolClass == .modifier {
-                if temp != "" {
-                    tokens.append(temp)
-                    temp = ""
+                if temp {
+                    tokenNumber += 1
+                    temp = false
+                    
+                    if tokenNumber == place + 1 {
+                        return i - 1
+                    }
                 }
                 
-                if tokens.count == place + 1 {
-                    return i - 1
-                }
+                tokenNumber += 1
                 
-                tokens.append(String(char))
-                
-                if tokens.count == place + 1 {
+                if tokenNumber == place + 1 {
                     return i
                 }
                 
                 continue
             }
             
-            temp += String(char)
+            temp = true
         }
         
-        tokens.append(temp)
+        tokenNumber += 1
         
-        if tokens.count == place + 1 {
+        if tokenNumber == place + 1 {
             return inputProgram.count - 1
         }
         
