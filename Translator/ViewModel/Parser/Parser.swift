@@ -157,10 +157,20 @@ class Parser {
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
+                } else if lastContentToken.type == .operation && token.type == .operation {
+                    return Result(failureValue: ErrorDescription.tooMuchOperations, failurePlace: tokenNum)
+                } else if (lastContentToken.type == .number || lastContentToken.type == .word) && (token.type == .number || token.type == .word) {
+                    return Result(failureValue: ErrorDescription.operandsGoInARow, failurePlace: tokenNum)
+                } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .function {
+                    return Result(failureValue: ErrorDescription.functionGoInARow, failurePlace: tokenNum)
                 } else if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .operation {
                     tokensOfVar.append(token)
                     lastContentToken = token
                     continue
+                } else if lastContentToken.type == .operation && token.type == .endOfLine {
+                    return Result(failureValue: ErrorDescription.operationOnEnd, failurePlace: tokenNum)
+                } else if lastContentToken.type == .function && token.type == .endOfLine {
+                    return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum)
                 } else if lastContentToken.type == .operation && (token.type == .number || token.type == .word || token.type == .function) {
                     tokensOfVar.append(token)
                     lastContentToken = token
@@ -186,7 +196,7 @@ class Parser {
                 } else if lastContentToken.type == .endOfLine && token.type == .word {
                     lastContentToken = token
                     continue
-                } else if lastContentToken.type == .word && token.value == "=" {
+                } else if lastContentToken.type == .word && token.type == .equal {
                     lastToken = lastContentToken
                     lastContentToken = token
                     continue
@@ -203,6 +213,10 @@ class Parser {
                     return Result(successValue: result)
                 } else if token.type == .endOfLine {
                     continue
+                } else if token.type == .comma {
+                    return Result(failureValue: ErrorDescription.commaInVar, failurePlace: tokenNum)
+                } else if lastContentToken.type == .endOfLine && token.type != .word {
+                    return Result(failureValue: ErrorDescription.nameOfVar, failurePlace: tokenNum)
                 } else {
                     return Result(failureValue: ErrorDescription.variableInStructure, failurePlace: tokenNum)
                 }

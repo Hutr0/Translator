@@ -34,12 +34,19 @@ struct ErrorDescription {
     static let zvenoWord = "Ошибка: Ожидалась Переменная в Звено 'Second'."
     
     static let minus = "Ошибка: Слишком много минусов."
+    static let tooMuchOperations = "Ошибка: Операции не могут идти подряд."
+    static let operandsGoInARow = "Ошибка: Операнды не могут идти подряд. Требуется какая-либо операция."
+    static let functionGoInARow = "Ошибка: Функция не может идти подряд за операндом без операции с ней. Требуется какая-либо операция."
+    static let operationOnEnd = "Ошибка: Операция не может быть последним элементом в строке. Она должна быть между двумя операндами."
+    static let functionOnEnd = "Ошибка: Функция не может быть последним элементом в строке. У неё должен быть операнд."
+    static let commaInVar = "Ошибка: Запятая не может быть спользована, так как операды целочисленные."
+    static let nameOfVar = "Ошибка: Название переменной должно начинаться с буквы."
     static let getVarString = "Ошибка: Невозможно получить строку переменной."
-    static let variableInStructure = "Ошибка: Нарушена структура программы (Переменная)"
+    static let variableInStructure = "Ошибка: Нарушена структура программы (Переменная)."
     static let incorrectTermination = "Ошибка: Программы была завершена некорректно."
     static let calculate = "Ошибка: Невозможно посчитать результат."
     static let failureValueOrPlace = "Ошибка: Значение 'failureValue' или 'failurePlace' равно nil. Невозможно вернуть ошибку."
-    static let getParserFailure = "Ошибка: Функиця 'getParserFailure' вернула некорректный результат."
+    static let getParserFailure = "Ошибка: Функция 'getParserFailure' вернула некорректный результат."
     static let lexicalSuccessValue = "Ошибка: 'successValue' лексического анализатора равно nil. Невозможно вернуть результат."
     
     static func varNotDeclared(name: String) -> String {
