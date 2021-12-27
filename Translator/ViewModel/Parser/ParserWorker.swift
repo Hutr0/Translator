@@ -38,57 +38,14 @@ struct ParserWorker {
         
         for (i, token) in tokens.enumerated() {
             
+            print("[\(i)]: \(token)")
+            
             if i == place {
-                let attributedString = NSMutableAttributedString(string:program)
-//
-//                guard var programPlace = self.tokenize(inputProgram: program, place: place) else {
-//                    if token == "\n" {
-//                        return ("['\(lastToken)' в строке №\(rowCount)] \(value)", nil)
-//                    } else {
-//                        return ("['\(token)' в строке №\(rowCount)] \(value)", nil)
-//                    }
-//                }
-                
+                let attributedString = AttributedString.getAttributedStringForParser(program: program, token: token, place: place)
+
                 if token == "\n" {
-//                    programPlace -= 1
-//
-//                    let stringOneRegex: NSRegularExpression?
-//                    if isNumber(string: lastToken) {
-//                        stringOneRegex = try? NSRegularExpression(pattern: "\(lastToken)", options: [])
-//                    } else {
-//                        stringOneRegex = try? NSRegularExpression(pattern: "\\\(lastToken)", options: [])
-//                    }
-//
-//                    guard let stringOneRegex = stringOneRegex else { return ("['\(lastToken)' в строке №\(rowCount)] \(value)", nil) }
-//
-//                    let stringOneMatches = stringOneRegex.matches(in: program, options: [], range: NSMakeRange(0, attributedString.length))
-//                    for stringOneMatch in stringOneMatches {
-//                        let wordRange = stringOneMatch.range(at: 0)
-//                        if wordRange.location == programPlace {
-//                            attributedString.addAttribute(.foregroundColor, value: NSColor.red, range: wordRange)
-//                        }
-//                    }
-                    
                     return ("['\(lastToken)' в строке №\(rowCount)] \(value)", attributedString)
                 } else {
-//                    let stringOneRegex: NSRegularExpression?
-//                    if isNumber(string: token) || isWord(string: token) {
-//                        stringOneRegex = try? NSRegularExpression(pattern: "\(token)", options: [])
-//                    } else {
-//                        programPlace += 1
-//                        stringOneRegex = try? NSRegularExpression(pattern: "\\\(token)", options: [])
-//                    }
-//
-//                    guard let stringOneRegex = stringOneRegex else { return ("['\(token)' в строке №\(rowCount)] \(value)", nil) }
-//
-//                    let stringOneMatches = stringOneRegex.matches(in: program, options: [], range: NSMakeRange(0, attributedString.length))
-//                    for stringOneMatch in stringOneMatches {
-//                        let wordRange = stringOneMatch.range(at: 0)
-//                        if wordRange.location == programPlace {
-//                            attributedString.addAttribute(.foregroundColor, value: NSColor.red, range: wordRange)
-//                        }
-//                    }
-                    
                     return ("['\(token)' в строке №\(rowCount)] \(value)", attributedString)
                 }
             }
@@ -102,61 +59,4 @@ struct ParserWorker {
         
         return (value, nil)
     }
-    
-//    static func tokenize(inputProgram: String, place: Int) -> Int? {
-//        var temp = ""
-//        var tokenNumber = 0
-//
-//        for (i, char) in inputProgram.enumerated() {
-//            if tokenNumber == place {
-//                return i
-//            }
-//
-//            let symbolClass = Symbol.getSymbolClass(symbol: char)
-//
-//            guard let symbolClass = symbolClass else {
-//                return nil
-//            }
-//
-//            if symbolClass == .separator {
-//                if temp != "" {
-//                    tokenNumber += 1
-//                    temp = ""
-//                }
-//                continue
-//            }
-//
-//            if symbolClass == .modifier {
-//                if temp != "" {
-//                    tokenNumber += 1
-//                    temp = ""
-//                }
-//                tokenNumber += 1
-//                continue
-//            }
-//
-//            temp += String(char)
-//        }
-//
-//        return nil
-//    }
-//
-//    private static func isNumber(string: String) -> Bool {
-//        return Int(string) != nil
-//    }
-//
-//    private static func isWord(string: String) -> Bool {
-//        let pattern = "^([a-zA-Z]){1,}([a-zA-Z0-7])*"
-//
-//        do {
-//            let reg = try NSRegularExpression(pattern: pattern)
-//            let result = reg.matches(in: string, range: NSRange(string.startIndex..., in: string))
-//
-//            return !result.isEmpty
-//        } catch {
-//            print(error.localizedDescription)
-//        }
-//
-//        return false
-//    }
 }

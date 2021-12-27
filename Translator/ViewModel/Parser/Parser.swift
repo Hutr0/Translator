@@ -199,14 +199,14 @@ class Parser {
                 }
                 
                 if lastContentToken.type == .operation && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.operationOnEnd, failurePlace: tokenNum)
+                    return Result(failureValue: ErrorDescription.operationOnEnd, failurePlace: tokenNum - 1)
                 }
                 if lastContentToken.type == .function && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum)
+                    return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum - 1)
                 }
                 
                 if lastContentToken.type == .equal && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum)
+                    return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum - 1)
                 }
                 
                 // Main block
