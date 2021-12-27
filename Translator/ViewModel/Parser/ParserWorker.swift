@@ -38,8 +38,6 @@ struct ParserWorker {
         
         for (i, token) in tokens.enumerated() {
             
-            print("[\(i)]: \(token)")
-            
             if i == place {
                 let attributedString = AttributedString.getAttributedStringForParser(program: program, token: token, place: place)
 

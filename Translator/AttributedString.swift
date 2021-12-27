@@ -48,7 +48,7 @@ struct AttributedString {
         let stringOneMatches = stringOneRegex.matches(in: program, options: [], range: NSMakeRange(0, attributedString.length))
         for stringOneMatch in stringOneMatches {
             let wordRange = stringOneMatch.range(at: 0)
-            if wordRange.location == programPlace {
+            if wordRange.location == programPlace - wordRange.length {
                 attributedString.addAttribute(.foregroundColor, value: NSColor.red, range: wordRange)
             }
         }
@@ -69,7 +69,7 @@ struct AttributedString {
                     temp = false
                     
                     if tokenNumber == place + 1 {
-                        return i - 1
+                        return i
                     }
                 }
                 continue
@@ -81,14 +81,14 @@ struct AttributedString {
                     temp = false
                     
                     if tokenNumber == place + 1 {
-                        return i - 1
+                        return i
                     }
                 }
                 
                 tokenNumber += 1
                 
                 if tokenNumber == place + 1 {
-                    return i
+                    return i + 1
                 }
                 
                 continue
@@ -100,7 +100,7 @@ struct AttributedString {
         tokenNumber += 1
         
         if tokenNumber == place + 1 {
-            return inputProgram.count - 1
+            return inputProgram.count
         }
         
         return nil

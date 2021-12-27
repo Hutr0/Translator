@@ -248,15 +248,18 @@ class Parser {
                         guard let strings = varStringResult.successValue,
                               let str = strings.first
                         else {
-                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum)
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
                         }
                         result.append(str)
                         tokensOfVar = []
                         lastContentToken = token
                         continue
                     case .failure:
-                        let failureValue = varStringResult.failureValue
-                        return Result(failureValue: failureValue ?? "Unknown error...", failurePlace: tokenNum)
+                        guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
+                        }
+                        let place = tokenNum - (tokensOfVar.count - failurePlace)
+                        return Result(failureValue: failureValue, failurePlace: place)
                     }
                 }
                 
