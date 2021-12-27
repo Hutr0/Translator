@@ -37,7 +37,7 @@ class MainController {
     
     //MARK: - Выполнение программы
     
-    func execute(program: String, completion: @escaping (String, NSMutableAttributedString?) -> ()) {
-        executor.execute(program: program, completion: completion)
+    func execute(program: String, cursorPosition: NSRange, completion: @escaping (String, NSRange, NSMutableAttributedString?) -> ()) {
+        executor.execute(program: program, cursorPosition: cursorPosition, completion: completion)
     }
 }

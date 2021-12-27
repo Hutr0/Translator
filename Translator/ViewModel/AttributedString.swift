@@ -8,9 +8,10 @@
 import Cocoa
 
 struct AttributedString {
-    static func getAttributedStringForLexicalAnalyzer(program: String, symbol: Character, place: Int) -> NSMutableAttributedString? {
+    static func getAttributedStringForLexicalAnalyzer(program: String, symbol: Character, place: Int) -> (NSRange?, NSMutableAttributedString?) {
         let attributedString = NSMutableAttributedString(string:program)
         let stringOneRegex: NSRegularExpression?
+        var cursorPosition: NSRange!
         
         if symbol.isNumber {
             stringOneRegex = try? NSRegularExpression(pattern: "\(symbol)", options: [])
@@ -18,23 +19,25 @@ struct AttributedString {
             stringOneRegex = try? NSRegularExpression(pattern: "\\\(symbol)", options: [])
         }
         
-        guard let stringOneRegex = stringOneRegex else { return nil }
+        guard let stringOneRegex = stringOneRegex else { return (nil, nil) }
 
         let stringOneMatches = stringOneRegex.matches(in: program, options: [], range: NSMakeRange(0, attributedString.length))
         for stringOneMatch in stringOneMatches {
             let wordRange = stringOneMatch.range(at: 0)
             if wordRange.location == place {
+                cursorPosition = wordRange
                 attributedString.addAttribute(.foregroundColor, value: NSColor.red, range: wordRange)
             }
         }
         
-        return attributedString
+        return (cursorPosition, attributedString)
     }
     
-    static func getAttributedStringForParser(program: String, token: String, place: Int) -> NSMutableAttributedString? {
+    static func getAttributedStringForParser(program: String, token: String, place: Int) -> (NSRange?, NSMutableAttributedString?) {
         let attributedString = NSMutableAttributedString(string:program)
+        var cursorPosition: NSRange!
         
-        guard let programPlace = self.tokenize(inputProgram: program, place: place) else { return nil }
+        guard let programPlace = self.tokenize(inputProgram: program, place: place) else { return (nil, nil) }
             
         let stringOneRegex: NSRegularExpression?
         if StringChecker.isNumber(string: token) || StringChecker.isWord(string: token) {
@@ -43,17 +46,18 @@ struct AttributedString {
             stringOneRegex = try? NSRegularExpression(pattern: "\\\(token)", options: [])
         }
         
-        guard let stringOneRegex = stringOneRegex else { return nil }
+        guard let stringOneRegex = stringOneRegex else { return (nil, nil) }
         
         let stringOneMatches = stringOneRegex.matches(in: program, options: [], range: NSMakeRange(0, attributedString.length))
         for stringOneMatch in stringOneMatches {
             let wordRange = stringOneMatch.range(at: 0)
             if wordRange.location == programPlace - wordRange.length {
+                cursorPosition = wordRange
                 attributedString.addAttribute(.foregroundColor, value: NSColor.red, range: wordRange)
             }
         }
         
-        return attributedString
+        return (cursorPosition, attributedString)
     }
     
     private static func tokenize(inputProgram: String, place: Int) -> Int? {

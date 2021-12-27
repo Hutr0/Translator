@@ -12,19 +12,19 @@ struct LexicalWorker {
         return LexicalAnalyzer.tokenize(inputProgram: program)
     }
     
-    static func getLexicalFailure(of value: String, in place: Int, program: String) -> (String, NSMutableAttributedString?) {
+    static func getLexicalFailure(of value: String, in place: Int, program: String) -> (String, NSRange?, NSMutableAttributedString?) {
         var rowCount = 0
         for (i, symbol) in program.enumerated() {
             if i == place {
                 let attributedString = AttributedString.getAttributedStringForLexicalAnalyzer(program: program, symbol: symbol, place: place)
                 
-                return ("[Строк №\(rowCount+1)]: \(value)", attributedString)
+                return ("[Строк №\(rowCount+1)]: \(value)", attributedString.0, attributedString.1)
             }
             if symbol == "\n" {
                 rowCount += 1
             }
         }
         
-        return ("\(value)", nil)
+        return ("\(value)", nil, nil)
     }
 }

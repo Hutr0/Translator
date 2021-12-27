@@ -8,13 +8,13 @@
 import Foundation
 
 struct ParserWorker {
-    static func getParserResult(tokens: [String], program: String) -> (String, NSMutableAttributedString?) {
+    static func getParserResult(tokens: [String], program: String) -> (String, NSRange?, NSMutableAttributedString?) {
         let parserResult = Parser().parse(stringTokens: tokens)
         
         switch parserResult.type {
         case .success:
             guard let values = parserResult.successValue else {
-                return (ErrorDescription.failureValueOrPlace, NSMutableAttributedString(string: program))
+                return (ErrorDescription.failureValueOrPlace, nil, NSMutableAttributedString(string: program))
             }
             
             var resultString = ""
@@ -22,19 +22,19 @@ struct ParserWorker {
                 resultString += "\(value)\n"
             }
             
-            return (resultString, nil)
+            return (resultString, nil, nil)
         case .failure:
             guard let failureValue = parserResult.failureValue,
                   let failurePlace = parserResult.failurePlace
-            else { return (ErrorDescription.failureValueOrPlace, nil) }
+            else { return (ErrorDescription.failureValueOrPlace, nil, nil) }
             
             let error = getParserFailure(of: failureValue, in: failurePlace, tokens: tokens, program: program)
             
-            return (error.0, error.1)
+            return (error.0, error.1, error.2)
         }
     }
     
-    static func getParserFailure(of value: String, in place: Int, tokens: [String], program: String) -> (String, NSMutableAttributedString?) {
+    static func getParserFailure(of value: String, in place: Int, tokens: [String], program: String) -> (String, NSRange?, NSMutableAttributedString?) {
         var rowCount = 1
         var lastToken = "<ОШИБКА>"
         
@@ -44,9 +44,9 @@ struct ParserWorker {
                 let attributedString = AttributedString.getAttributedStringForParser(program: program, token: token, place: place)
 
                 if token == "\n" {
-                    return ("['\(lastToken)' в строке №\(rowCount)] \(value)", attributedString)
+                    return ("['\(lastToken)' в строке №\(rowCount)] \(value)", attributedString.0, attributedString.1)
                 } else {
-                    return ("['\(token)' в строке №\(rowCount)] \(value)", attributedString)
+                    return ("['\(token)' в строке №\(rowCount)] \(value)", attributedString.0, attributedString.1)
                 }
             }
             
@@ -57,6 +57,6 @@ struct ParserWorker {
             lastToken = token
         }
         
-        return (value, nil)
+        return (value, nil, nil)
     }
 }

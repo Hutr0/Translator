@@ -52,7 +52,7 @@ class MainView: NSViewController {
     }
     
     @IBAction func executeButtonTapped(_ sender: NSButton) {
-        controller.execute(program: program.string) { [weak self] result, attributedString in
+        controller.execute(program: program.string, cursorPosition: program.selectedRange()) { [weak self] result, cursorPosition, attributedString in
             guard let self = self else { return }
             
             self.output.string = result
@@ -63,6 +63,8 @@ class MainView: NSViewController {
                 self.program.textStorage?.setAttributedString(NSAttributedString(string: self.program.string,
                                                                                  attributes: [.foregroundColor: NSColor.black]))
             }
+            
+            self.program.setSelectedRange(NSMakeRange(cursorPosition.location + cursorPosition.length, 0))
         }
     }
 }
