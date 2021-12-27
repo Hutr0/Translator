@@ -22,9 +22,9 @@ class Calculator {
         var operations: [String] = []
         
         var currentDeclaredVariables: [DeclaredVariable] = []
-        var declared = false
         
         for token in tokens {
+            var declared = false
             switch token.type {
             case .operation:
                 operations.append(token.value)
