@@ -12,11 +12,13 @@ struct LexicalWorker {
         return LexicalAnalyzer.tokenize(inputProgram: program)
     }
     
-    static func getLexicalFailure(of value: String, in place: Int, program: String) -> (String, Character?) {
+    static func getLexicalFailure(of value: String, in place: Int, program: String) -> (String, NSMutableAttributedString?) {
         var rowCount = 0
         for (i, symbol) in program.enumerated() {
             if i == place {
-                return ("[Строк №\(rowCount+1)]: \(value)", symbol)
+                let attributedString = AttributedString.getAttributedStringForLexicalAnalyzer(program: program, symbol: symbol, place: place)
+                
+                return ("[Строк №\(rowCount+1)]: \(value)", attributedString)
             }
             if symbol == "\n" {
                 rowCount += 1

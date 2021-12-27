@@ -23,14 +23,14 @@ class Calculator {
         
         var currentDeclaredVariables: [DeclaredVariable] = []
         
-        for token in tokens {
+        for (i, token) in tokens.enumerated() {
             var declared = false
             switch token.type {
             case .operation:
                 operations.append(token.value)
             case .number:
                 guard var doubleValue = Double(token.value) else {
-                    return Result(failureValue: ErrorDescription.convertToDouble(value: token.value), failurePlace: -1)
+                    return Result(failureValue: ErrorDescription.convertToDouble(value: token.value), failurePlace: i)
                 }
                 
                 if token.minus {
@@ -77,7 +77,7 @@ class Calculator {
                 }
                 
                 if !declared {
-                    return Result(failureValue: ErrorDescription.varNotDeclared(name: token.value), failurePlace: -1)
+                    return Result(failureValue: ErrorDescription.varNotDeclared(name: token.value), failurePlace: i)
                 }
             default:
                 continue
