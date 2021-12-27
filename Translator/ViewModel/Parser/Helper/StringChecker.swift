@@ -12,7 +12,7 @@ struct StringChecker {
     /// Get tokens from string of tokens and return it
     /// - Parameter stringTokens: Array of string tokens
     /// - Returns: Array of tokens
-    static func getTokens(stringTokens: [String]) -> [Token]? {
+    static func getTokens(stringTokens: [String]) -> ([Token]?, Bool, Bool) {
         var startIsSet = false
         var endIsSet = false
         var tokens: [Token] = []
@@ -25,21 +25,23 @@ struct StringChecker {
                     tokens.append(Token(type: .number, value: stringToken))
                 } else if isWord(string: stringToken) {
                     tokens.append(Token(type: .word, value: stringToken))
+                } else if stringToken == "" {
+                    continue
                 } else {
                     tokens.append(Token(type: .none, value: stringToken))
                 }
             } else {
-                tokens.append(Token(type: type, value: stringToken))
-                
                 if type == .startOfProgram && !startIsSet {
                     startIsSet = true
                 } else if type == .endOfProgram && !endIsSet {
                     endIsSet = true
-                } else if (type == .startOfProgram && startIsSet) || (type == .endOfProgram && endIsSet) { return nil }
+                } else if (type == .startOfProgram && startIsSet) || (type == .endOfProgram && endIsSet) { return (nil, true, true) }
+                
+                tokens.append(Token(type: type, value: stringToken))
             }
         }
         
-        return tokens
+        return (tokens, startIsSet, endIsSet)
     }
     
     private static func getTokenType(stringToken: String) -> TokenType? {
