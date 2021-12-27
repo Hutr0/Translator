@@ -13,7 +13,9 @@ struct ParserWorker {
         
         switch parserResult.type {
         case .success:
-            guard let values = parserResult.successValue else { return (ErrorDescription.failureValueOrPlace, NSMutableAttributedString(string: program)) }
+            guard let values = parserResult.successValue else {
+                return (ErrorDescription.failureValueOrPlace, NSMutableAttributedString(string: program))
+            }
             
             var resultString = ""
             for value in values {

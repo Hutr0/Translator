@@ -56,20 +56,12 @@ class MainView: NSViewController {
             guard let self = self else { return }
             
             self.output.string = result
-            
-//            let attributedString = NSMutableAttributedString(string: self.program.string, attributes: [.foregroundColor: NSColor.red])
-//            self.program.textStorage?.setAttributedString(attributedString)
-            
-//            for (i, str) in self.program.string.split(separator: "\n").enumerated() {
-//                print("[\(i)]: \(str)")
-//            }
-//
-//            let range = (self.program.string as NSString).range(of: "Second")
-//
-//            self.program.textStorage?.addAttribute(.foregroundColor, value: NSColor.red, range: range)
 
             if let string = attributedString {
                 self.program.textStorage?.setAttributedString(string)
+            } else {
+                self.program.textStorage?.setAttributedString(NSAttributedString(string: self.program.string,
+                                                                                 attributes: [.foregroundColor: NSColor.black]))
             }
         }
     }

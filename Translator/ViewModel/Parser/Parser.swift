@@ -208,6 +208,9 @@ class Parser {
                 if lastContentToken.type == .equal && token.type == .endOfLine {
                     return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum - 1)
                 }
+                if lastContentToken.type == .equal && token.type == .equal {
+                    return Result(failureValue: ErrorDescription.tooMuchEqual, failurePlace: tokenNum)
+                }
                 
                 // Main block
                 if lastContentToken.type == .equal && (token.type == .number || token.type == .word || token.type == .function) {

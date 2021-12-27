@@ -34,7 +34,7 @@ struct AttributedString {
     static func getAttributedStringForParser(program: String, token: String, place: Int) -> NSMutableAttributedString? {
         let attributedString = NSMutableAttributedString(string:program)
         
-        guard var programPlace = self.tokenize(inputProgram: program, place: place) else { return nil }
+        guard let programPlace = self.tokenize(inputProgram: program, place: place) else { return nil }
             
         let stringOneRegex: NSRegularExpression?
         if StringChecker.isNumber(string: token) || StringChecker.isWord(string: token) {
