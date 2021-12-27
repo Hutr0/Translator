@@ -93,6 +93,16 @@ class Parser {
                     if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
                         return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenNum)
                     }
+                    if token.type == .endOfProgram {
+                        if firstNumbersCounter < 1 {
+                            return Result(failureValue: ErrorDescription.missedNumberAndVar, failurePlace: tokenNum)
+                        } else {
+                            return Result(failureValue: ErrorDescription.missedFirstVar, failurePlace: tokenNum)
+                        }
+                    }
+                    if token.type == .word && firstNumbersCounter < 1 {
+                        return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
+                    }
                     
                     // Main Block
                     if token.type == .number {
@@ -112,22 +122,32 @@ class Parser {
                         continue
                     }
                     if token.type == .word {
-                        if firstNumbersCounter < 1 {
-                            return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
-                        }
                         lastToken = token
                         lastContentToken = token
                         lineWasEnded = false
                         continue
                     }
                     
-                    return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
+                    return Result(failureValue: ErrorDescription.firstZvenoInStructure, failurePlace: tokenNum)
                     
                 } else if lastToken.value == "Second" {
                     
                     // Error Block
                     if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
                         return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
+                    }
+                    if token.type == .endOfProgram {
+                        if secondWordsCounter < 1 {
+                            return Result(failureValue: ErrorDescription.missedWordAndVar, failurePlace: tokenNum)
+                        } else {
+                            return Result(failureValue: ErrorDescription.missedSecondVar, failurePlace: tokenNum)
+                        }
+                    }
+                    if token.type == .equal && secondWordsCounter < 2 {
+                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
+                    }
+                    if token.type == .number {
+                        return Result(failureValue: ErrorDescription.secondNumber, failurePlace: tokenNum)
                     }
                     
                     // Main Block
@@ -140,15 +160,12 @@ class Parser {
                         continue
                     }
                     if token.type == .equal {
-                        if secondWordsCounter < 2 {
-                            return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
-                        }
                         lastToken = Token(type: .word, value: lastContentToken.value)
                         lastContentToken = token
                         continue
                     }
                     
-                    return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
+                    return Result(failureValue: ErrorDescription.secondZvenoInStructure, failurePlace: tokenNum)
                     
                 } else {
                     return Result(failureValue: ErrorDescription.zvenoElememtMissedInStructure, failurePlace: tokenNum)
@@ -174,9 +191,6 @@ class Parser {
                 if lastContentToken.value == "-" && token.value == "-" {
                     return Result(failureValue: ErrorDescription.minus, failurePlace: tokenNum)
                 }
-                if lastContentToken.type == .operation && token.type == .operation {
-                    return Result(failureValue: ErrorDescription.tooMuchOperations, failurePlace: tokenNum)
-                }
                 if (lastContentToken.type == .number || lastContentToken.type == .word) && (token.type == .number || token.type == .word) {
                     return Result(failureValue: ErrorDescription.operandsGoInARow, failurePlace: tokenNum)
                 }
@@ -189,6 +203,10 @@ class Parser {
                 }
                 if lastContentToken.type == .function && token.type == .endOfLine {
                     return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum)
+                }
+                
+                if lastContentToken.type == .equal && token.type == .endOfLine {
+                    return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum)
                 }
                 
                 // Main block
@@ -267,6 +285,10 @@ class Parser {
                 
                 if token.type == .endOfLine {
                     continue
+                }
+                
+                if lastContentToken.type == .operation && token.type == .operation {
+                    return Result(failureValue: ErrorDescription.tooMuchOperations, failurePlace: tokenNum)
                 }
                
                 return Result(failureValue: ErrorDescription.variableInStructure, failurePlace: tokenNum)

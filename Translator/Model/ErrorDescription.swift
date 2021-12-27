@@ -28,10 +28,17 @@ struct ErrorDescription {
     
     static let zvenoComma = "Ошибка: Ожидалось число после запятой в Звено 'First'."
     static let zvenoNumber = "Ошибка: Ожидалось число в Звено 'First'."
-    static let zvenoTooMuchNumbers = "Ошибка: Элементы Звено 'First' должны быть написаны в одну строку."
+    static let missedNumberAndVar = "Ошибка: Ожидалось число в Звено 'First' и ожидалась Операция в структуре программы."
+    static let missedFirstVar = "Ошибка: Ожидалась Операция в структуре программы после Звено 'First'."
+    static let zvenoTooMuchNumbers = "Ошибка: Элементы в Звено 'First' должны быть написаны в одну строку."
+    static let firstZvenoInStructure = "Ошибка: Нарушена структура в Звено 'First'."
     
-    static let zvenoTooMuchWords = "Ошибка: Элементы Звено 'Second' должны быть написаны в одну строку."
+    static let zvenoTooMuchWords = "Ошибка: Элементы в Звено 'Second' должны быть написаны в одну строку."
     static let zvenoWord = "Ошибка: Ожидалась Переменная в Звено 'Second'."
+    static let missedWordAndVar = "Ошибка: Ожидалась Переменная в Звено 'Second' и ожидалась Операция в структуре программы."
+    static let missedSecondVar = "Ошибка: Ожидалась Операция в структуре программы после Звено 'Second'."
+    static let secondNumber = "Ошибка: Число не может быть в Звено 'Second'. Ожидалась Переменная."
+    static let secondZvenoInStructure = "Ошибка: Нарушена структура в Звено 'Second'."
     
     static let minus = "Ошибка: Слишком много минусов."
     static let tooMuchOperations = "Ошибка: Операции не могут идти подряд."
@@ -48,6 +55,7 @@ struct ErrorDescription {
     static let failureValueOrPlace = "Ошибка: Значение 'failureValue' или 'failurePlace' равно nil. Невозможно вернуть ошибку."
     static let getParserFailure = "Ошибка: Функция 'getParserFailure' вернула некорректный результат."
     static let lexicalSuccessValue = "Ошибка: 'successValue' лексического анализатора равно nil. Невозможно вернуть результат."
+    static let afterEqual = "Ошибка: После знака '=' должно быть выражение или значение."
     
     static func varNotDeclared(name: String) -> String {
         return "Ошибка: '\(name)' переменная не объявлена."
