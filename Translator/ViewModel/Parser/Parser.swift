@@ -86,24 +86,32 @@ class Parser {
             if lastToken.type == .zveno {
                 if lastToken.value == "First" {
                     
+                    // Error Block
                     if token.type == .endOfLine && lastContentToken.type == .comma {
                         return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenNum)
-                    } else if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
+                    }
+                    if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
                         return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenNum)
-                    } else if token.type == .number {
+                    }
+                    
+                    // Main Block
+                    if token.type == .number {
                         elementsOFZveno.append(token)
                         lastContentToken = token
                         lineWasEnded = false
                         firstNumbersCounter += 1
                         continue
-                    } else if lastContentToken.type == .number && token.type == .comma {
+                    }
+                    if lastContentToken.type == .number && token.type == .comma {
                         lastContentToken = token
                         lineWasEnded = false
                         continue
-                    } else if token.type == .endOfLine {
+                    }
+                    if token.type == .endOfLine {
                         lineWasEnded = true
                         continue
-                    } else if token.type == .word {
+                    }
+                    if token.type == .word {
                         if firstNumbersCounter < 1 {
                             return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
                         }
@@ -111,30 +119,36 @@ class Parser {
                         lastContentToken = token
                         lineWasEnded = false
                         continue
-                    } else {
-                        return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
                     }
+                    
+                    return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
                     
                 } else if lastToken.value == "Second" {
                     
+                    // Error Block
+                    if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
+                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
+                    }
+                    
+                    // Main Block
                     if token.type == .word {
                         lastContentToken = token
                         secondWordsCounter += 1
                         continue
-                    } else if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
-                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
-                    } else if token.type == .endOfLine {
+                    }
+                    if token.type == .endOfLine {
                         continue
-                    } else if token.type == .equal {
+                    }
+                    if token.type == .equal {
                         if secondWordsCounter < 2 {
                             return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
                         }
                         lastToken = Token(type: .word, value: lastContentToken.value)
                         lastContentToken = token
                         continue
-                    } else {
-                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
                     }
+                    
+                    return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
                     
                 } else {
                     return Result(failureValue: ErrorDescription.zvenoElememtMissedInStructure, failurePlace: tokenNum)
