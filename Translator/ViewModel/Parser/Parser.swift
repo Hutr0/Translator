@@ -88,7 +88,7 @@ class Parser {
                     
                     // Error Block
                     if token.type == .endOfLine && lastContentToken.type == .comma {
-                        return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenNum)
+                        return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenNum - 1)
                     }
                     if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
                         return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenNum)
@@ -134,7 +134,7 @@ class Parser {
                     
                     // Error Block
                     if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
-                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
+                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum - 1)
                     }
                     if token.type == .endOfProgram {
                         if secondWordsCounter < 1 {
