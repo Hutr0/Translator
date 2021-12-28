@@ -17,7 +17,6 @@ class Parser {
     func parse(stringTokens: [String]) -> Result {
         var lastToken = Token(type: nil, value: "")             // Last token (Begin, Zveno, Variable, End)
         var lastContentToken = Token(type: nil, value: "")      // Last content of token (word, number, operation, ...)
-        var lastLastToken = Token(type: nil, value: "")
         
         var lineWasEnded: Bool = false                          // Line was ended
         var elementsOFZveno: [Token] = []                       // Elements of Zveno
@@ -28,7 +27,6 @@ class Parser {
         var tokensOfVar: [Token] = []                           // Variables of current token
         
         var result: [String] = []                               // Result of variables calculation for current method
-        var newOper = true
         
         let tokensResult = StringChecker.getTokens(stringTokens: stringTokens)
         guard let tokens = tokensResult.0 else {
@@ -194,9 +192,7 @@ class Parser {
                     return Result(failureValue: ErrorDescription.minus, failurePlace: tokenNum)
                 }
                 if (lastContentToken.type == .number || lastContentToken.type == .word) && (token.type == .number || token.type == .word) {
-//                    return Result(failureValue: ErrorDescription.operandsGoInARow, failurePlace: tokenNum)
-                    lastContentToken = token
-                    continue
+                    return Result(failureValue: ErrorDescription.operandsGoInARow, failurePlace: tokenNum)
                 }
                 if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .function {
                     return Result(failureValue: ErrorDescription.functionGoInARow, failurePlace: tokenNum)
@@ -248,28 +244,26 @@ class Parser {
                 }
                 
                 if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .endOfLine {
+                    let varStringResult = calculator.getVarString(name: lastToken.value, tokens: tokensOfVar)
                     
-                        let varStringResult = calculator.getVarString(name: lastToken.value, tokens: tokensOfVar)
-                        
-                        switch varStringResult.type {
-                        case .success:
-                            guard let strings = varStringResult.successValue,
-                                  let str = strings.first
-                            else {
-                                return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
-                            }
-                            result.append(str)
-                            tokensOfVar = []
-                            lastContentToken = token
-                            newOper = false
-                            continue
-                        case .failure:
-                            guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
-                                return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
-                            }
-                            let place = tokenNum - (tokensOfVar.count - failurePlace)
-                            return Result(failureValue: failureValue, failurePlace: place)
+                    switch varStringResult.type {
+                    case .success:
+                        guard let strings = varStringResult.successValue,
+                              let str = strings.first
+                        else {
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
                         }
+                        result.append(str)
+                        tokensOfVar = []
+                        lastContentToken = token
+                        continue
+                    case .failure:
+                        guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
+                        }
+                        let place = tokenNum - (tokensOfVar.count - failurePlace)
+                        return Result(failureValue: failureValue, failurePlace: place)
+                    }
                 }
                 
                 if lastContentToken.type == .endOfLine && token.type == .word {
@@ -278,38 +272,8 @@ class Parser {
                 }
                 
                 if lastContentToken.type == .word && token.type == .equal {
-                    
-                    
-                    
-                    if newOper {
-                        let varStringResult = calculator.getVarString(name: lastLastToken.value, tokens: tokensOfVar)
-                        
-                        switch varStringResult.type {
-                        case .success:
-                            guard let strings = varStringResult.successValue,
-                                  let str = strings.first
-                            else {
-                                return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
-                            }
-                            result.append(str)
-                            tokensOfVar = []
-                            lastContentToken = token
-                            newOper = false
-                            continue
-                        case .failure:
-                            guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
-                                return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
-                            }
-                            let place = tokenNum - (tokensOfVar.count - failurePlace)
-                            return Result(failureValue: failureValue, failurePlace: place)
-                        }
-                    } else {
-                        lastLastToken = lastToken
-                    }
-                    
                     lastToken = lastContentToken
                     lastContentToken = token
-                    newOper = true
                     continue
                 }
                 
