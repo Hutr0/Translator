@@ -56,6 +56,7 @@ struct ErrorDescription {
     static let getParserFailure = "Ошибка: Функция 'getParserFailure' вернула некорректный результат."
     static let lexicalSuccessValue = "Ошибка: 'successValue' лексического анализатора равно nil. Невозможно вернуть результат."
     static let afterEqual = "Ошибка: После знака '=' должно быть выражение или значение."
+    static let tooMuchEqual = "Ошибка: Слишком много занков '='."
     
     static func varNotDeclared(name: String) -> String {
         return "Ошибка: '\(name)' переменная не объявлена."

@@ -67,11 +67,11 @@ struct StringChecker {
         }
     }
 
-    private static func isNumber(string: String) -> Bool {
+    static func isNumber(string: String) -> Bool {
         return Int(string) != nil
     }
 
-    private static func isWord(string: String) -> Bool {
+    static func isWord(string: String) -> Bool {
         let pattern = "^([a-zA-Z]){1,}([a-zA-Z0-7])*"
 
         do {

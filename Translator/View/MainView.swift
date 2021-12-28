@@ -27,8 +27,6 @@ class MainView: NSViewController {
     @IBOutlet var program: NSTextView!
     @IBOutlet weak var programScrollView: NSScrollView!
     
-    @IBOutlet weak var autoCheck: NSButton!
-    
     let controller = MainController()
     
     override func viewDidLoad() {
@@ -54,10 +52,19 @@ class MainView: NSViewController {
     }
     
     @IBAction func executeButtonTapped(_ sender: NSButton) {
-        controller.execute(program: program.string) { [weak self] result in
+        controller.execute(program: program.string, cursorPosition: program.selectedRange()) { [weak self] result, cursorPosition, attributedString in
             guard let self = self else { return }
             
             self.output.string = result
+
+            if let string = attributedString {
+                self.program.textStorage?.setAttributedString(string)
+            } else {
+                self.program.textStorage?.setAttributedString(NSAttributedString(string: self.program.string,
+                                                                                 attributes: [.foregroundColor: NSColor.black]))
+            }
+            
+            self.program.setSelectedRange(NSMakeRange(cursorPosition.location + cursorPosition.length, 0))
         }
     }
 }
@@ -66,13 +73,6 @@ extension MainView: NSTextViewDelegate {
     
     func textDidChange(_ notification: Notification) {
         setCorrectlyRowsCount()
-        if autoCheck.state.rawValue == 1 {
-            controller.execute(program: program.string) { [weak self] result in
-                guard let self = self else { return }
-                
-                self.output.string = result
-            }
-        }
     }
     
     private func setCorrectlyRowsCount() {

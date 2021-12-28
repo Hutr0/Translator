@@ -13,13 +13,11 @@ class LexicalAnalyzer {
         var tokens: [String] = []
         var temp: String = ""
         
-        var symbolCount = 0
-        for char in inputProgram {
-            symbolCount += 1
+        for (num, char) in inputProgram.enumerated() {
             let symbolClass = Symbol.getSymbolClass(symbol: char)
             
             guard let symbolClass = symbolClass else {
-                return Result(failureValue: ErrorDescription.wrongSymbol(symbol: char), failurePlace: symbolCount)
+                return Result(failureValue: ErrorDescription.wrongSymbol(symbol: char), failurePlace: num)
             }
             
             if symbolClass == .separator {

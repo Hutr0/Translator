@@ -8,27 +8,35 @@
 import Foundation
 
 class ProgramExecutor {
-    func execute(program: String, completion: @escaping (String) -> ()) {
+    func execute(program: String, cursorPosition: NSRange, completion: @escaping (String, NSRange, NSMutableAttributedString?) -> ()) {
         let lexicalResult = LexicalWorker.getLexicalResult(program: program)
         
         switch lexicalResult.type {
         case .success:
             guard let tokens = lexicalResult.successValue else { return }
             
-            let parserResult = ParserWorker.getParserResult(tokens: tokens)
+            let parserResult = ParserWorker.getParserResult(tokens: tokens, program: program)
             
-            completion(parserResult)
+            if parserResult.1 == nil {
+                completion(parserResult.0, cursorPosition, parserResult.2)
+            } else {
+                completion(parserResult.0, parserResult.1!, parserResult.2)
+            }
         case .failure:
             guard let failureValue = lexicalResult.failureValue,
                     let failurePlace = lexicalResult.failurePlace
             else {
-                completion(ErrorDescription.failureValueOrPlace)
+                completion(ErrorDescription.failureValueOrPlace, cursorPosition, nil)
                 return
             }
             
             let error = LexicalWorker.getLexicalFailure(of: failureValue, in: failurePlace, program: program)
             
-            completion(error)
+            if error.1 == nil {
+                completion(error.0, cursorPosition, error.2)
+            } else {
+                completion(error.0, error.1!, error.2)
+            }
         }
     }
 }

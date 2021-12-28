@@ -199,14 +199,17 @@ class Parser {
                 }
                 
                 if lastContentToken.type == .operation && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.operationOnEnd, failurePlace: tokenNum)
+                    return Result(failureValue: ErrorDescription.operationOnEnd, failurePlace: tokenNum - 1)
                 }
                 if lastContentToken.type == .function && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum)
+                    return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum - 1)
                 }
                 
                 if lastContentToken.type == .equal && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum)
+                    return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum - 1)
+                }
+                if lastContentToken.type == .equal && token.type == .equal {
+                    return Result(failureValue: ErrorDescription.tooMuchEqual, failurePlace: tokenNum)
                 }
                 
                 // Main block
@@ -248,15 +251,18 @@ class Parser {
                         guard let strings = varStringResult.successValue,
                               let str = strings.first
                         else {
-                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum)
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
                         }
                         result.append(str)
                         tokensOfVar = []
                         lastContentToken = token
                         continue
                     case .failure:
-                        let failureValue = varStringResult.failureValue
-                        return Result(failureValue: failureValue ?? "Unknown error...", failurePlace: tokenNum)
+                        guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
+                        }
+                        let place = tokenNum - (tokensOfVar.count - failurePlace)
+                        return Result(failureValue: failureValue, failurePlace: place)
                     }
                 }
                 
