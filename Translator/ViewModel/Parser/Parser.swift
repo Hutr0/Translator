@@ -28,6 +28,10 @@ class Parser {
         
         var result: [String] = []                               // Result of variables calculation for current method
         
+        var maybeNewVar = false
+        var maybeNewBrokenVar = false
+        var maybeNewEqualBrokenVar = false
+        
         let tokensResult = StringChecker.getTokens(stringTokens: stringTokens)
         guard let tokens = tokensResult.0 else {
             return Result(failureValue: ErrorDescription.tooMuchBeginOrEnd, failurePlace: -1)
@@ -174,6 +178,37 @@ class Parser {
             
             if lastToken.type == .word {
                 
+                if maybeNewVar {
+                    if lastContentToken.type == .word && token.type == .equal {
+                        let varStringResult = calculator.getVarString(name: lastToken.value, tokens: tokensOfVar)
+                        
+                        switch varStringResult.type {
+                        case .success:
+                            guard let strings = varStringResult.successValue,
+                                  let str = strings.first
+                            else {
+                                return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
+                            }
+                            result.append(str)
+                            tokensOfVar = []
+                            lastToken = lastContentToken
+                            lastContentToken = token
+                            maybeNewVar = false
+                            maybeNewBrokenVar = false
+                            maybeNewEqualBrokenVar = false
+                            continue
+                        case .failure:
+                            guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
+                                return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
+                            }
+                            let place = tokenNum - (tokensOfVar.count - failurePlace)
+                            return Result(failureValue: failureValue, failurePlace: place)
+                        }
+                    } else {
+                        return Result(failureValue: ErrorDescription.operandsGoInARow, failurePlace: tokenNum - 1)
+                    }
+                }
+                
                 // Result Block
                 if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
                     print("Выполнено")
@@ -181,6 +216,10 @@ class Parser {
                 }
                 
                 // Error Block
+                if token.type == nil {
+                    return Result(failureValue: ErrorDescription.wrong, failurePlace: tokenNum)
+                }
+                
                 if token.type == .comma {
                     return Result(failureValue: ErrorDescription.commaInVar, failurePlace: tokenNum)
                 }
@@ -188,10 +227,14 @@ class Parser {
                     return Result(failureValue: ErrorDescription.nameOfVar, failurePlace: tokenNum)
                 }
                 
+                if lastContentToken.type != .word && token.type == .equal {
+                    return Result(failureValue: ErrorDescription.equalForVar, failurePlace: tokenNum)
+                }
+                
                 if lastContentToken.value == "-" && token.value == "-" {
                     return Result(failureValue: ErrorDescription.minus, failurePlace: tokenNum)
                 }
-                if (lastContentToken.type == .number || lastContentToken.type == .word) && (token.type == .number || token.type == .word) {
+                if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .number {
                     return Result(failureValue: ErrorDescription.operandsGoInARow, failurePlace: tokenNum)
                 }
                 if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .function {
@@ -212,10 +255,21 @@ class Parser {
                     return Result(failureValue: ErrorDescription.tooMuchEqual, failurePlace: tokenNum)
                 }
                 
+                if lastContentToken.type == .equal && token.type == .operation && token.value != "-" {
+                    return Result(failureValue: ErrorDescription.operationsAfterEqual, failurePlace: tokenNum)
+                }
+                
                 // Main block
+                if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .word {
+                    maybeNewVar = true
+                    lastContentToken = token
+                    continue
+                }
+                
                 if lastContentToken.type == .equal && (token.type == .number || token.type == .word || token.type == .function) {
                     tokensOfVar.append(token)
                     lastContentToken = token
+                    maybeNewEqualBrokenVar = true
                     continue
                 }
                 
@@ -228,6 +282,7 @@ class Parser {
                     token.minus = true
                     tokensOfVar.append(token)
                     lastContentToken = token
+                    maybeNewBrokenVar = true
                     continue
                 }
                 
@@ -240,6 +295,7 @@ class Parser {
                 if lastContentToken.type == .operation && (token.type == .number || token.type == .word || token.type == .function) {
                     tokensOfVar.append(token)
                     lastContentToken = token
+                    maybeNewBrokenVar = true
                     continue
                 }
                 
@@ -256,6 +312,8 @@ class Parser {
                         result.append(str)
                         tokensOfVar = []
                         lastContentToken = token
+                        maybeNewBrokenVar = false
+                        maybeNewEqualBrokenVar = false
                         continue
                     case .failure:
                         guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
@@ -272,14 +330,23 @@ class Parser {
                 }
                 
                 if lastContentToken.type == .word && token.type == .equal {
-                    lastToken = lastContentToken
-                    lastContentToken = token
-                    continue
+                    if !maybeNewBrokenVar && !maybeNewEqualBrokenVar {
+                        lastToken = lastContentToken
+                        lastContentToken = token
+                        continue
+                    } else {
+                        if maybeNewBrokenVar {
+                            return Result(failureValue: ErrorDescription.equalDoesNotExist, failurePlace: tokenNum)
+                        } else if maybeNewEqualBrokenVar {
+                            return Result(failureValue: ErrorDescription.equalInEqual, failurePlace: tokenNum)
+                        }
+                    }
                 }
                 
                 if lastContentToken.type == .function && (token.type == .number || token.type == .word) {
                     tokensOfVar.append(token)
                     lastContentToken = token
+                    maybeNewBrokenVar = true
                     continue
                 }
                 
