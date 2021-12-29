@@ -15,6 +15,7 @@ class MainView: NSViewController {
         }
     }
     @IBOutlet var output: NSTextView!
+    @IBOutlet weak var isDoubleResult: NSButton!
     
     @IBOutlet var rowsOfProgram: NSTextView! {
         didSet {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppKit
 
 class Calculator {
     
@@ -113,15 +114,21 @@ class Calculator {
         }
         
         let variable: String
-        if result.truncatingRemainder(dividingBy: 1) == 0 {
-            variable = "\(name) = \(Int(result))"
+        
+        let viewController = NSApplication.shared.mainWindow?.contentViewController as! MainView
+        if viewController.isDoubleResult.state.rawValue == 1 {
+            if result.truncatingRemainder(dividingBy: 1) == 0 {
+                variable = "\(name) = \(Int(result))"
+            } else {
+                let nf = NumberFormatter()
+                nf.numberStyle = .decimal
+                nf.maximumFractionDigits = 3
+                
+                let number = NSNumber(value: result)
+                variable = "\(name) = \(nf.string(from: number) ?? String(result))"
+            }
         } else {
-            let nf = NumberFormatter()
-            nf.numberStyle = .decimal
-            nf.maximumFractionDigits = 3
-            
-            let number = NSNumber(value: result)
-            variable = "\(name) = \(nf.string(from: number) ?? String(result))"
+            variable = "\(name) = \(Int(result))"
         }
         
         print(variable)
