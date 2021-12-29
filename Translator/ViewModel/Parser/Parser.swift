@@ -18,11 +18,13 @@ class Parser {
         var lastToken = Token(type: nil, value: "")             // Last token (Begin, Zveno, Variable, End)
         var lastContentToken = Token(type: nil, value: "")      // Last content of token (word, number, operation, ...)
         
-        var lineWasEnded: Bool = false                          // Line was ended
+//        var lineWasEnded: Bool = false                          // Line was ended
         var elementsOFZveno: [Token] = []                       // Elements of Zveno
         
         var firstNumbersCounter = 0                             // Counter for 'First' numbers
         var secondWordsCounter = 0                              // Counter for 'Second' words
+        var endOfLineArray: [Int] = []
+        var endOfLineCounter = 0
         
         var tokensOfVar: [Token] = []                           // Variables of current token
         
@@ -67,14 +69,19 @@ class Parser {
                 continue
             }
             
-            if lastToken.type == .startOfProgram && token.type == .endOfLine {
+            if token.type == .endOfLine {
+                endOfLineCounter += 1
                 continue
-            } else  if lastToken.type == .startOfProgram && token.type == .zveno {
+            }
+            
+            if lastToken.type == .startOfProgram && token.type == .zveno {
                 lastToken = token
                 continue
-            } else if lastToken.type == .startOfProgram && token.type != .zveno && token.type != .endOfLine {
+            } else if lastToken.type == .startOfProgram && token.type != .zveno {
                 return Result(failureValue: ErrorDescription.missedZveno, failurePlace: tokenNum)
-            } else if lastToken.type == .zveno && token.type == .zveno {
+            }
+            
+            if lastToken.type == .zveno && token.type == .zveno {
                 if lastContentToken.type == nil {
                     return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenNum)
                 }
@@ -91,12 +98,12 @@ class Parser {
                 if lastToken.value == "First" {
                     
                     // Error Block
-                    if token.type == .endOfLine && lastContentToken.type == .comma {
+                    if lastContentToken.type == .comma && token.type != .number {
                         return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenNum - 1)
                     }
-                    if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
-                        return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenNum)
-                    }
+//                    if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
+//                        return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenNum)
+//                    }
                     if token.type == .endOfProgram {
                         if firstNumbersCounter < 1 {
                             return Result(failureValue: ErrorDescription.missedNumberAndVar, failurePlace: tokenNum)
@@ -112,23 +119,24 @@ class Parser {
                     if token.type == .number {
                         elementsOFZveno.append(token)
                         lastContentToken = token
-                        lineWasEnded = false
+//                        lineWasEnded = false
                         firstNumbersCounter += 1
                         continue
                     }
                     if lastContentToken.type == .number && token.type == .comma {
                         lastContentToken = token
-                        lineWasEnded = false
+//                        lineWasEnded = false
                         continue
                     }
-                    if token.type == .endOfLine {
-                        lineWasEnded = true
-                        continue
-                    }
+//                    if token.type == .endOfLine {
+//                        lineWasEnded = true
+//                        continue
+//                    }
                     if token.type == .word {
                         lastToken = token
                         lastContentToken = token
-                        lineWasEnded = false
+                        endOfLineCounter = 0
+//                        lineWasEnded = false
                         continue
                     }
                     
@@ -137,9 +145,9 @@ class Parser {
                 } else if lastToken.value == "Second" {
                     
                     // Error Block
-                    if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
-                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum - 1)
-                    }
+//                    if lastContentToken.type != .word && lastContentToken.type != nil && token.type == .endOfLine {
+//                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum - 1)
+//                    }
                     if token.type == .endOfProgram {
                         if secondWordsCounter < 1 {
                             return Result(failureValue: ErrorDescription.missedWordAndVar, failurePlace: tokenNum)
@@ -160,13 +168,18 @@ class Parser {
                         secondWordsCounter += 1
                         continue
                     }
-                    if token.type == .endOfLine {
-                        continue
-                    }
+//                    if token.type == .endOfLine {
+//                        continue
+//                    }
                     if token.type == .equal {
                         lastToken = Token(type: .word, value: lastContentToken.value)
                         lastContentToken = token
+                        endOfLineCounter = 0
                         continue
+                    }
+                    
+                    if token.type != .word {
+                        return Result(failureValue: ErrorDescription.zvenoWord, failurePlace: tokenNum)
                     }
                     
                     return Result(failureValue: ErrorDescription.secondZvenoInStructure, failurePlace: tokenNum)
@@ -177,6 +190,9 @@ class Parser {
             }
             
             if lastToken.type == .word {
+                
+                endOfLineArray.append(endOfLineCounter)
+                endOfLineCounter = 0
                 
                 if maybeNewVar {
                     if lastContentToken.type == .word && token.type == .equal {
@@ -196,12 +212,18 @@ class Parser {
                             maybeNewVar = false
                             maybeNewBrokenVar = false
                             maybeNewEqualBrokenVar = false
+                            endOfLineArray = []
                             continue
                         case .failure:
                             guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
                                 return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
                             }
-                            let place = tokenNum - (tokensOfVar.count - failurePlace)
+                            
+                            var count = 0
+                            for f in failurePlace+1...endOfLineArray.count-1 {
+                                count += endOfLineArray[f]
+                            }
+                            let place = tokenNum - (tokensOfVar.count - failurePlace + 1) - count // +1, потому что -1 для count + 2
                             return Result(failureValue: failureValue, failurePlace: place)
                         }
                     } else {
@@ -210,8 +232,32 @@ class Parser {
                 }
                 
                 // Result Block
-                if lastContentToken.type == .endOfLine && token.type == .endOfProgram {
+                if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .endOfProgram {
                     print("Выполнено")
+                    
+                    let varStringResult = calculator.getVarString(name: lastToken.value, tokens: tokensOfVar)
+
+                    switch varStringResult.type {
+                    case .success:
+                        guard let strings = varStringResult.successValue,
+                              let str = strings.first
+                        else {
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
+                        }
+                        result.append(str)
+                    case .failure:
+                        guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
+                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
+                        }
+                        
+                        var count = 0
+                        for f in failurePlace+1...endOfLineArray.count-1 {
+                            count += endOfLineArray[f]
+                        }
+                        let place = tokenNum - (tokensOfVar.count - failurePlace) - count
+                        return Result(failureValue: failureValue, failurePlace: place)
+                    }
+                    
                     return Result(successValue: result)
                 }
                 
@@ -223,9 +269,9 @@ class Parser {
                 if token.type == .comma {
                     return Result(failureValue: ErrorDescription.commaInVar, failurePlace: tokenNum)
                 }
-                if lastContentToken.type == .endOfLine && token.type != .word && token.type != .endOfLine {
-                    return Result(failureValue: ErrorDescription.nameOfVar, failurePlace: tokenNum)
-                }
+//                if lastContentToken.type == .endOfLine && token.type != .word && token.type != .endOfLine {
+//                    return Result(failureValue: ErrorDescription.nameOfVar, failurePlace: tokenNum)
+//                }
                 
                 if lastContentToken.type != .word && token.type == .equal {
                     return Result(failureValue: ErrorDescription.equalForVar, failurePlace: tokenNum)
@@ -242,16 +288,26 @@ class Parser {
                     return Result(failureValue: ErrorDescription.functionGoInARow, failurePlace: tokenNum)
                 }
                 
-                if lastContentToken.type == .operation && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.operationOnEnd, failurePlace: tokenNum - 1)
+                if lastContentToken.type == .operation && token.type == .endOfProgram {
+                    return Result(failureValue: ErrorDescription.operationOnEnd, failurePlace: tokenNum)
                 }
-                if lastContentToken.type == .function && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum - 1)
+                if lastContentToken.type == .function && token.type == .endOfProgram {
+                    return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum)
+                }
+                if lastContentToken.type == .equal && token.type == .endOfProgram {
+                    return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum)
                 }
                 
-                if lastContentToken.type == .equal && token.type == .endOfLine {
-                    return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum - 1)
-                }
+//                if lastContentToken.type == .operation && token.type == .endOfLine {
+//                    return Result(failureValue: ErrorDescription.operationOnEnd, failurePlace: tokenNum - 1)
+//                }
+//                if lastContentToken.type == .function && token.type == .endOfLine {
+//                    return Result(failureValue: ErrorDescription.functionOnEnd, failurePlace: tokenNum - 1)
+//                }
+//                if lastContentToken.type == .equal && token.type == .endOfLine {
+//                    return Result(failureValue: ErrorDescription.afterEqual, failurePlace: tokenNum - 1)
+//                }
+                
                 if lastContentToken.type == .equal && token.type == .equal {
                     return Result(failureValue: ErrorDescription.tooMuchEqual, failurePlace: tokenNum)
                 }
@@ -300,35 +356,35 @@ class Parser {
                     continue
                 }
                 
-                if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .endOfLine {
-                    let varStringResult = calculator.getVarString(name: lastToken.value, tokens: tokensOfVar)
-                    
-                    switch varStringResult.type {
-                    case .success:
-                        guard let strings = varStringResult.successValue,
-                              let str = strings.first
-                        else {
-                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
-                        }
-                        result.append(str)
-                        tokensOfVar = []
-                        lastContentToken = token
-                        maybeNewBrokenVar = false
-                        maybeNewEqualBrokenVar = false
-                        continue
-                    case .failure:
-                        guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
-                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
-                        }
-                        let place = tokenNum - (tokensOfVar.count - failurePlace)
-                        return Result(failureValue: failureValue, failurePlace: place)
-                    }
-                }
+//                if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .endOfLine {
+//                    let varStringResult = calculator.getVarString(name: lastToken.value, tokens: tokensOfVar)
+//
+//                    switch varStringResult.type {
+//                    case .success:
+//                        guard let strings = varStringResult.successValue,
+//                              let str = strings.first
+//                        else {
+//                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: tokenNum - 1)
+//                        }
+//                        result.append(str)
+//                        tokensOfVar = []
+//                        lastContentToken = token
+//                        maybeNewBrokenVar = false
+//                        maybeNewEqualBrokenVar = false
+//                        continue
+//                    case .failure:
+//                        guard let failureValue = varStringResult.failureValue, let failurePlace = varStringResult.failurePlace else {
+//                            return Result(failureValue: ErrorDescription.getVarString, failurePlace: -1)
+//                        }
+//                        let place = tokenNum - (tokensOfVar.count - failurePlace)
+//                        return Result(failureValue: failureValue, failurePlace: place)
+//                    }
+//                }
                 
-                if lastContentToken.type == .endOfLine && token.type == .word {
-                    lastContentToken = token
-                    continue
-                }
+//                if lastContentToken.type == .endOfLine && token.type == .word {
+//                    lastContentToken = token
+//                    continue
+//                }
                 
                 if lastContentToken.type == .word && token.type == .equal {
                     if !maybeNewBrokenVar && !maybeNewEqualBrokenVar {
@@ -357,9 +413,9 @@ class Parser {
                     continue
                 }
                 
-                if token.type == .endOfLine {
-                    continue
-                }
+//                if token.type == .endOfLine {
+//                    continue
+//                }
                 
                 if lastContentToken.type == .operation && token.type == .operation {
                     return Result(failureValue: ErrorDescription.tooMuchOperations, failurePlace: tokenNum)
