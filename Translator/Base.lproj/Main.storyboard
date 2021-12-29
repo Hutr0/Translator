@@ -919,18 +919,18 @@
                                                     <stackView distribution="fill" orientation="vertical" alignment="centerX" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C7S-Mq-bi3">
                                                         <rect key="frame" x="850" y="9" width="350" height="76"/>
                                                         <subviews>
-                                                            <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="At6-ix-xq7">
-                                                                <rect key="frame" x="12" y="56" width="326" height="20"/>
+                                                            <stackView distribution="fillEqually" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="At6-ix-xq7">
+                                                                <rect key="frame" x="0.0" y="56" width="350" height="20"/>
                                                                 <subviews>
                                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NK3-HB-d14">
-                                                                        <rect key="frame" x="-2" y="1" width="168" height="18"/>
+                                                                        <rect key="frame" x="-2" y="1" width="173" height="18"/>
                                                                         <buttonCell key="cell" type="check" title="Результат типа Double" bezelStyle="regularSquare" imagePosition="left" inset="2" id="P3F-a5-9Oh">
                                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                                             <font key="font" metaFont="system"/>
                                                                         </buttonCell>
                                                                     </button>
                                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TCH-Co-anB" userLabel="Тестовая программа">
-                                                                        <rect key="frame" x="167" y="-7" width="166" height="32"/>
+                                                                        <rect key="frame" x="172" y="-7" width="185" height="32"/>
                                                                         <buttonCell key="cell" type="push" title="Тестовая программа" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="LvA-J1-Ofm">
                                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                                             <font key="font" metaFont="system"/>
@@ -974,6 +974,7 @@
                                                         </subviews>
                                                         <constraints>
                                                             <constraint firstItem="G46-ZN-ESR" firstAttribute="width" secondItem="C7S-Mq-bi3" secondAttribute="width" id="LCO-GQ-BUM"/>
+                                                            <constraint firstItem="At6-ix-xq7" firstAttribute="width" secondItem="G46-ZN-ESR" secondAttribute="width" id="Lp1-kO-1Na"/>
                                                             <constraint firstItem="W4F-fg-CuA" firstAttribute="width" secondItem="C7S-Mq-bi3" secondAttribute="width" id="e7r-xq-aNi"/>
                                                         </constraints>
                                                         <visibilityPriorities>
