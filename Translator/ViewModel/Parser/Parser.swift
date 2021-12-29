@@ -86,6 +86,10 @@ class Parser {
                     return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenNum)
                 }
                 
+                if lastToken.value == "First" && lastContentToken.type == .comma {
+                    return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenNum - 1)
+                }
+                
                 lastContentToken = Token(type: nil, value: "")
                 elementsOFZveno = []
                 lastToken = token
@@ -98,9 +102,9 @@ class Parser {
                 if lastToken.value == "First" {
                     
                     // Error Block
-                    if lastContentToken.type == .comma && token.type != .number {
-                        return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenNum - 1)
-                    }
+//                    if lastContentToken.type == .comma && token.type != .number {
+//                        return Result(failureValue: ErrorDescription.zvenoComma, failurePlace: tokenNum - 1)
+//                    }
 //                    if lineWasEnded && token.type == .number && !elementsOFZveno.isEmpty {
 //                        return Result(failureValue: ErrorDescription.zvenoTooMuchNumbers, failurePlace: tokenNum)
 //                    }
@@ -138,6 +142,10 @@ class Parser {
                         endOfLineCounter = 0
 //                        lineWasEnded = false
                         continue
+                    }
+                    
+                    if token.type != .number {
+                        return Result(failureValue: ErrorDescription.zvenoNumber, failurePlace: tokenNum)
                     }
                     
                     return Result(failureValue: ErrorDescription.firstZvenoInStructure, failurePlace: tokenNum)
