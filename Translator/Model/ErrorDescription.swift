@@ -24,6 +24,8 @@ struct ErrorDescription {
     
     static let missedZveno = "Ошибка: Ожидалось Звено в структуре программы."
     static let zvenoInStructure = "Ошибка: Нарушена структура программы (Звено)."
+    static let noOneElementInFirst = "Ошибка: В Звено 'First' отсутствуют элементы."
+    static let noOneElementInSecond = "Ошибка: В Звено 'Second' отсутствуют элементы."
     static let zvenoElememtMissedInStructure = "Ошибка: Нарушена структура программы. Ожидалось 'First' или 'Second' в Звено."
     
     static let zvenoComma = "Ошибка: Ожидалось число после запятой в Звено 'First'."

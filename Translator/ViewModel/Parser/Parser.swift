@@ -83,7 +83,13 @@ class Parser {
             
             if lastToken.type == .zveno && token.type == .zveno {
                 if lastContentToken.type == nil {
-                    return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenNum)
+                    if lastToken.value == "First" {
+                        return Result(failureValue: ErrorDescription.noOneElementInFirst, failurePlace: tokenNum - 1)
+                    } else if lastToken.value == "Second" {
+                        return Result(failureValue: ErrorDescription.noOneElementInSecond, failurePlace: tokenNum - 1)
+                    } else {
+                        return Result(failureValue: ErrorDescription.zvenoInStructure, failurePlace: tokenNum)
+                    }
                 }
                 
                 if lastToken.value == "First" && lastContentToken.type == .comma {
