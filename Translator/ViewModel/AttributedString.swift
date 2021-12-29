@@ -40,10 +40,14 @@ struct AttributedString {
         guard let programPlace = self.tokenize(inputProgram: program, place: place) else { return (nil, nil) }
             
         let stringOneRegex: NSRegularExpression?
-        if StringChecker.isNumber(string: token) || StringChecker.isWord(string: token) {
+        do {
+            if StringChecker.isNumber(string: token) || StringChecker.isWord(string: token) {
+                stringOneRegex = try NSRegularExpression(pattern: "\(token)", options: [])
+            } else {
+                stringOneRegex = try NSRegularExpression(pattern: "\\\(token)", options: [])
+            }
+        } catch {
             stringOneRegex = try? NSRegularExpression(pattern: "\(token)", options: [])
-        } else {
-            stringOneRegex = try? NSRegularExpression(pattern: "\\\(token)", options: [])
         }
         
         guard let stringOneRegex = stringOneRegex else { return (nil, nil) }

@@ -57,6 +57,11 @@ struct ErrorDescription {
     static let lexicalSuccessValue = "Ошибка: 'successValue' лексического анализатора равно nil. Невозможно вернуть результат."
     static let afterEqual = "Ошибка: После знака '=' должно быть выражение или значение."
     static let tooMuchEqual = "Ошибка: Слишком много занков '='."
+    static let equalDoesNotExist = "Ошибка: Присвоения значения переменной невозможно, так как с ней проводится операция."
+    static let equalForVar = "Ошибка: Присвоения значения возможно только для переменной."
+    static let equalInEqual = "Ошибка: Присвоение значения переменной невозможно сразу после присвоения."
+    static let wrong = "Ошибка: Неверное значение или название переменной."
+    static let operationsAfterEqual = "Ошибка: Данная операция недопустима после знака '='."
     
     static func varNotDeclared(name: String) -> String {
         return "Ошибка: '\(name)' переменная не объявлена."
