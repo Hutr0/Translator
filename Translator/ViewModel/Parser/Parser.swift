@@ -27,7 +27,7 @@ class Parser {
         var tokensOfVar: [Token] = []                           // Variables of current token
         
         var result: [String] = []                               // Result of variables calculation for current method
-        
+      
         var maybeNewVar = false
         var maybeNewBrokenVar = false
         var maybeNewEqualBrokenVar = false
@@ -234,6 +234,7 @@ class Parser {
                 if lastContentToken.value == "-" && token.value == "-" {
                     return Result(failureValue: ErrorDescription.minus, failurePlace: tokenNum)
                 }
+
                 if (lastContentToken.type == .number || lastContentToken.type == .word) && token.type == .number {
                     return Result(failureValue: ErrorDescription.operandsGoInARow, failurePlace: tokenNum)
                 }
